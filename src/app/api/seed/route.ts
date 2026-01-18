@@ -91,8 +91,9 @@ export async function GET() {
                     couponType: template.type,
                     discountValue: template.discount,
                     store: store._id,
+                    category: categories[Math.floor(Math.random() * categories.length)]._id,
                     startDate: new Date(),
-                    endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+                    expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
                     isActive: true,
                     isFeatured: Math.random() > 0.5,
                     isExclusive: Math.random() > 0.7,
