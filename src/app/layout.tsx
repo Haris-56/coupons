@@ -20,6 +20,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+import MouseGradient from "@/components/MouseGradient";
+import AnimatedStars from "@/components/AnimatedStars";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -31,12 +34,14 @@ export default async function RootLayout({
     <html lang="en">
       <head />
       <body className={`${font.className} antialiased`}>
+        <MouseGradient />
+        <AnimatedStars />
         {settings.headerScripts && (
-          <div dangerouslySetInnerHTML={{ __html: settings.headerScripts }} />
+          <div className="hidden" dangerouslySetInnerHTML={{ __html: settings.headerScripts }} />
         )}
         {children}
         {settings.footerScripts && (
-          <div dangerouslySetInnerHTML={{ __html: settings.footerScripts }} />
+          <div className="hidden" dangerouslySetInnerHTML={{ __html: settings.footerScripts }} />
         )}
       </body>
     </html>

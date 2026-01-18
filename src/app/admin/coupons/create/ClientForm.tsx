@@ -12,6 +12,26 @@ const initialState = {
     errors: {} as Record<string, string[]>,
 };
 
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <button
+            type="submit"
+            disabled={pending}
+            className="w-full bg-slate-900 hover:bg-black text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wider transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+            {pending ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+                <>
+                    <Save size={18} />
+                    Save Coupon
+                </>
+            )}
+        </button>
+    );
+}
+
 export default function ClientForm({ stores, categories }: { stores: any[], categories: any[] }) {
     // @ts-ignore
     const [state, formAction] = useActionState(createCoupon, initialState);
@@ -44,143 +64,126 @@ export default function ClientForm({ stores, categories }: { stores: any[], cate
     };
 
     return (
-        <form action={formAction} className="pb-20">
-            <div className="flex items-center gap-4 mb-6">
-                <Link href="/admin/coupons" className="bg-white border border-secondary-200 p-2 rounded-full hover:bg-secondary-50 text-secondary-500 transition-all shadow-sm">
-                    <ArrowLeft size={20} />
+        <form action={formAction} className="pb-20 space-y-8">
+            <div className="flex items-center gap-4">
+                <Link href="/admin/coupons" className="bg-white border border-slate-200 p-3 rounded-xl hover:bg-slate-50 text-slate-500 transition-all shadow-sm">
+                    <ArrowLeft size={18} />
                 </Link>
-                <div>
-                    <h1 className="text-2xl font-bold text-secondary-900">Add New Coupon</h1>
-                    <div className="h-1 w-10 bg-primary-600 rounded-full mt-1"></div>
+                <div className="space-y-1">
+                    <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+                        Add New Coupon
+                    </h1>
+                    <div className="h-1 w-12 bg-accent-500 rounded-full"></div>
                 </div>
             </div>
 
             {state?.message && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 flex items-center gap-2 border border-red-100">
-                    <AlertCircle size={20} />
-                    {state.message}
+                <div className="bg-rose-50 text-rose-600 p-4 rounded-xl flex items-center gap-3 border border-rose-100 animate-in fade-in slide-in-from-top-2">
+                    <AlertCircle size={18} />
+                    <span className="text-sm font-medium">{state.message}</span>
                 </div>
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Main Form */}
+                {/* Main Form Area */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white border border-secondary-200 rounded-xl shadow-sm p-6 space-y-6">
-                        {/* Title */}
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-secondary-500 uppercase">Title <span className="text-red-500">*</span></label>
+                    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-6">
+                        {/* Title Section */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Coupon Title <span className="text-rose-500">*</span></label>
                             <input
                                 name="title"
                                 type="text"
                                 required
-                                className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
+                                placeholder="e.g. 20% Off All Orders"
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 focus:bg-white transition-all shadow-sm"
                             />
-                            {state?.errors?.title && <p className="text-red-500 text-xs mt-1">{state.errors.title[0]}</p>}
+                            {state?.errors?.title && <p className="text-rose-500 text-xs mt-1">{state.errors.title[0]}</p>}
                         </div>
 
                         {/* Description */}
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-secondary-500 uppercase">Description</label>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Description</label>
                             <textarea
                                 name="description"
-                                rows={4}
-                                className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
+                                rows={3}
+                                placeholder="Enter coupon details..."
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 focus:bg-white transition-all shadow-sm"
                             />
                         </div>
 
-                        {/* Tag Line */}
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-secondary-500 uppercase">Tag Line</label>
-                            <input
-                                name="tagLine"
-                                type="text"
-                                className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
-                            />
-                        </div>
-
-                        {/* Selectors Row */}
+                        {/* Selectors */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Category <span className="text-red-500">*</span></label>
-                                <select name="categoryId" required className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm">
-                                    <option value="">---</option>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Category <span className="text-rose-500">*</span></label>
+                                <select name="categoryId" required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all shadow-sm cursor-pointer">
+                                    <option value="">Select Category</option>
                                     {mainCategories.map(cat => (
                                         <option key={cat._id} value={cat._id}>{cat.name}</option>
                                     ))}
                                 </select>
-                                {state?.errors?.categoryId && <p className="text-red-500 text-xs mt-1">{state.errors.categoryId[0]}</p>}
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Sub Category</label>
-                                <select name="subCategoryId" className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm">
-                                    <option value="">---</option>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Sub Category</label>
+                                <select name="subCategoryId" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all shadow-sm cursor-pointer">
+                                    <option value="">None</option>
                                     {subCategories.map(cat => (
                                         <option key={cat._id} value={cat._id}>{cat.name}</option>
                                     ))}
                                 </select>
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Store <span className="text-red-500">*</span></label>
-                                <select name="storeId" required className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm">
-                                    <option value="">---</option>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Store <span className="text-rose-500">*</span></label>
+                                <select name="storeId" required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all shadow-sm cursor-pointer">
+                                    <option value="">Select Store</option>
                                     {stores.map(store => (
                                         <option key={store._id} value={store._id}>{store.name}</option>
                                     ))}
                                 </select>
-                                {state?.errors?.storeId && <p className="text-red-500 text-xs mt-1">{state.errors.storeId[0]}</p>}
                             </div>
                         </div>
 
-                        {/* Code & Dates */}
+                        {/* Values & Type */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Code {couponType === 'Code' && <span className="text-red-500">*</span>}</label>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Coupon Code {couponType === 'Code' && <span className="text-rose-500">*</span>}</label>
                                 <input
                                     name="code"
                                     type="text"
                                     required={couponType === 'Code'}
-                                    className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white font-mono"
-                                />
-                                {state?.errors?.code && <p className="text-red-500 text-xs mt-1">{state.errors.code[0]}</p>}
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Start Date</label>
-                                <input
-                                    name="startDate"
-                                    type="date"
-                                    className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
+                                    placeholder="e.g. SAVE20"
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:border-accent-500 focus:bg-white transition-all shadow-sm"
                                 />
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Expire Date</label>
-                                <input
-                                    name="expiryDate"
-                                    type="date"
-                                    className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Tracking & Type */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Tracking Link <span className="text-red-500">*</span></label>
+                            <div className="space-y-2 md:col-span-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Tracking Link <span className="text-rose-500">*</span></label>
                                 <input
                                     name="trackingLink"
                                     type="url"
                                     required
-                                    placeholder="https://..."
-                                    className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
+                                    placeholder="https://merchant.link/..."
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 focus:bg-white transition-all shadow-sm"
                                 />
-                                {state?.errors?.trackingLink && <p className="text-red-500 text-xs mt-1">{state.errors.trackingLink[0]}</p>}
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Coupon Type</label>
+                        </div>
+
+                        {/* Dates & Status */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Start Date</label>
+                                <input name="startDate" type="date" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all shadow-sm" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Expiry Date</label>
+                                <input name="expiryDate" type="date" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all shadow-sm" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Coupon Type</label>
                                 <select
                                     name="couponType"
                                     defaultValue="Code"
                                     onChange={(e) => setCouponType(e.target.value)}
-                                    className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm"
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all shadow-sm cursor-pointer"
                                 >
                                     <option value="Code">Code</option>
                                     <option value="Deals">Deals</option>
@@ -191,97 +194,59 @@ export default function ClientForm({ stores, categories }: { stores: any[], cate
                             </div>
                         </div>
 
-                        {/* Toggles */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Featured</label>
-                                <select name="isFeatured" className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm">
-                                    <option value="no">No</option>
-                                    <option value="yes">Yes</option>
-                                </select>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Verify</label>
-                                <select name="isVerified" className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm">
-                                    <option value="no">No</option>
-                                    <option value="yes">Yes (Verified Badge)</option>
-                                </select>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Exclusive</label>
-                                <select name="isExclusive" className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm">
-                                    <option value="no">No</option>
-                                    <option value="yes">Yes</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        {/* SEO Section */}
-                        <div className="relative pt-4">
-                            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                <div className="w-full border-t border-secondary-200"></div>
-                            </div>
-                            <div className="relative flex justify-start">
-                                <span className="pr-2 bg-white text-xs font-bold text-secondary-400 uppercase tracking-widest">SEO Optimization</span>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">SEO Title</label>
-                                <input
-                                    name="seoTitle"
-                                    type="text"
-                                    className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
-                                />
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">SEO Description</label>
-                                <textarea
-                                    name="seoDescription"
-                                    rows={3}
-                                    className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
-                                />
-                            </div>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            {[
+                                { name: 'isFeatured', label: 'Featured' },
+                                { name: 'isVerified', label: 'Verified' },
+                                { name: 'isExclusive', label: 'Exclusive' },
+                                { name: 'isActive', label: 'Status', options: [{ v: 'enabled', l: 'Active' }, { v: 'disabled', l: 'Disabled' }] }
+                            ].map((item: any) => (
+                                <div key={item.name} className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">{item.label}</label>
+                                    <select name={item.name} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-accent-500 transition-all shadow-sm cursor-pointer">
+                                        {item.options ? item.options.map((o: any) => <option key={o.v} value={o.v}>{o.l}</option>) : (
+                                            <>
+                                                <option value="no">No</option>
+                                                <option value="yes">Yes</option>
+                                            </>
+                                        )}
+                                    </select>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
 
-                {/* Sidebar */}
+                {/* Sidebar area */}
                 <div className="space-y-6">
-                    <div className="bg-white border border-secondary-200 rounded-xl shadow-sm p-5 space-y-4">
-                        <h3 className="text-sm font-bold text-secondary-700">Display Status</h3>
-                        <select name="isActive" className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm">
-                            <option value="enabled">Enabled (Public)</option>
-                            <option value="disabled">Disabled (Private)</option>
-                        </select>
-                    </div>
-
-                    <div className="bg-white border border-secondary-200 rounded-xl shadow-sm p-5 space-y-4">
-                        <h3 className="text-sm font-bold text-secondary-700">Image / Logo</h3>
+                    {/* Media Upload */}
+                    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-6">
+                        <div className="space-y-1">
+                            <h3 className="text-sm font-bold text-slate-800">Coupon Image</h3>
+                            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Recommended: 600x400px</p>
+                        </div>
 
                         <div
-                            className="bg-secondary-50 border-2 border-dashed border-secondary-200 rounded-xl p-6 flex flex-col items-center justify-center text-center relative group cursor-pointer hover:border-primary-400 hover:bg-primary-50/30 transition-all"
+                            className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center text-center relative group cursor-pointer hover:border-accent-500 hover:bg-white transition-all"
                             onClick={() => fileInputRef.current?.click()}
                         >
                             {preview ? (
-                                <div className="space-y-2">
-                                    <img src={preview} alt="Preview" className="max-h-40 rounded-lg shadow-md mx-auto" />
+                                <div className="space-y-4">
+                                    <img src={preview} alt="Preview" className="max-h-48 rounded-xl shadow-lg mx-auto" />
                                     <button
                                         type="button"
                                         onClick={(e) => { e.stopPropagation(); removePreview(); }}
-                                        className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors shadow-lg active:scale-90"
+                                        className="absolute -top-3 -right-3 bg-rose-500 text-white p-2 rounded-full hover:bg-rose-600 transition-colors shadow-lg active:scale-90"
                                     >
                                         <X size={16} />
                                     </button>
                                 </div>
                             ) : (
                                 <>
-                                    <div className="bg-white p-3 rounded-full shadow-sm mb-3 group-hover:scale-110 transition-transform">
-                                        <Upload size={20} className="text-secondary-400 group-hover:text-primary-500" />
+                                    <div className="p-4 rounded-xl bg-white shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                                        <Upload size={24} className="text-slate-300 group-hover:text-accent-500 transition-colors" />
                                     </div>
-                                    <span className="text-sm font-bold text-secondary-600 mb-1">Choose File</span>
-                                    <span className="text-xs text-secondary-400 italic">Drag and drop or click</span>
+                                    <span className="text-xs font-bold text-slate-600">Click to upload</span>
                                 </>
                             )}
                             <input
@@ -293,13 +258,24 @@ export default function ClientForm({ stores, categories }: { stores: any[], cate
                                 onChange={handleFileChange}
                             />
                         </div>
-                        <p className="text-[10px] text-center text-secondary-400 font-bold uppercase tracking-tight">RECOMMENDED: 650 X 350</p>
                     </div>
 
-                    <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-lg font-bold text-sm uppercase tracking-wider transition-all shadow-lg shadow-primary-200 active:scale-95 flex items-center justify-center gap-2">
-                        <Save size={18} />
-                        Save Coupon
-                    </button>
+                    {/* SEO Config */}
+                    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-6">
+                        <h3 className="text-sm font-bold text-slate-800">SEO Settings</h3>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">SEO Title</label>
+                                <input name="seoTitle" type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all shadow-sm" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">SEO Description</label>
+                                <textarea name="seoDescription" rows={3} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all shadow-sm" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <SubmitButton />
                 </div>
             </div>
         </form>

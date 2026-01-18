@@ -1,31 +1,30 @@
+
 @import "tailwindcss";
 
 @theme {
-  /* Premium Midnight Palette */
-  --color-primary-50: #f5f3ff;
-  --color-primary-100: #ede9fe;
-  --color-primary-200: #ddd6fe;
-  --color-primary-300: #c4b5fd;
-  --color-primary-400: #a78bfa;
-  --color-primary-500: #8b5cf6;
-  --color-primary-600: #7c3aed;
-  --color-primary-700: #6d28d9;
-  --color-primary-800: #5b21b6;
-  --color-primary-900: #4c1d95;
-  --color-primary-950: #2e1065;
+  /* Premium Slate & High-Contrast Purple Palette */
+  --color-primary-50: #f8fafc;
+  --color-primary-100: #f1f5f9;
+  --color-primary-200: #e2e8f0;
+  --color-primary-300: #94a3b8;
+  --color-primary-400: #64748b;
+  --color-primary-500: #475569;
+  --color-primary-600: #334155;
+  --color-primary-700: #1e293b;
+  --color-primary-800: #0f172a;
+  --color-primary-900: #020617;
 
-  /* Deep Space Slate Palette */
-  --color-secondary-50: #f8fafc;
-  --color-secondary-100: #f1f5f9;
-  --color-secondary-200: #e2e8f0;
-  --color-secondary-300: #cbd5e1;
-  --color-secondary-400: #94a3b8;
-  --color-secondary-500: #64748b;
-  --color-secondary-600: #475569;
-  --color-secondary-700: #334155;
-  --color-secondary-800: #1e293b;
-  --color-secondary-900: #0f172a;
-  --color-secondary-950: #020617;
+  /* Accent: Brilliant Deep Purple (#8044EF) */
+  --color-accent-50: #f5f3ff;
+  --color-accent-100: #ede9fe;
+  --color-accent-200: #ddd6fe;
+  --color-accent-300: #c4b5fd;
+  --color-accent-400: #a78bfa;
+  --color-accent-500: #8044ef; 
+  --color-accent-600: #7c3aed;
+  --color-accent-700: #6d28d9;
+  --color-accent-800: #5b21b6;
+  --color-accent-900: #4c1d95;
 }
 
 @layer base {
@@ -33,97 +32,67 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply antialiased text-secondary-200 bg-secondary-950 min-h-screen relative overflow-x-hidden;
-    /* Grid Background */
+    @apply antialiased text-slate-700 bg-[#f1f5f9] min-h-screen relative overflow-x-hidden;
+    /* Elevated Square Grid - Premium Feel */
     background-image: 
-      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
+      linear-gradient(to right, rgba(15, 23, 42, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(15, 23, 42, 0.08) 1px, transparent 1px);
+    background-size: 50px 50px;
     background-attachment: fixed;
   }
 
   body::before {
     content: "";
     @apply fixed inset-0 z-[-1] pointer-events-none;
-    background: radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.15), transparent 70%),
-                radial-gradient(circle at 0% 100%, rgba(59, 130, 246, 0.08), transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.08), transparent 50%);
+    /* Star/Dot and Circle Layer */
+    background-image: 
+      radial-gradient(1.2px 1.2px at 20px 30px, #94a3b8, transparent),
+      radial-gradient(2px 2px at 150px 50px, #8044ef, transparent),
+      radial-gradient(1.2px 1.2px at 300px 100px, #cbd5e1, transparent),
+      radial-gradient(2.2px 2.2px at 450px 200px, #a78bfa, transparent),
+      radial-gradient(1.2px 1.2px at 100px 350px, #8044ef, transparent),
+      /* Subtle Large Circles */
+      radial-gradient(circle at 10% 20%, rgba(128, 68, 239, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(128, 68, 239, 0.04) 0%, transparent 40%);
+    background-size: 500px 500px, 400px 400px, 600px 600px, 700px 700px, 450px 450px, 100% 100%, 100% 100%;
   }
 
-  /* Star/Dot background effect */
-  body::after {
-    content: "";
-    @apply fixed inset-0 z-[-1] pointer-events-none opacity-30;
-    background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.15) 1px, transparent 0);
-    background-size: 24px 24px;
-    mask-image: radial-gradient(ellipse at center, black, transparent 80%);
-  }
-  
   ::selection {
-    @apply bg-primary-500/30 text-primary-200;
+    @apply bg-accent-500 text-white;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply text-white font-bold tracking-tight;
+    /* Fixed Heading Clipping: large padding-right and overflow visible */
+    @apply text-slate-900 font-bold tracking-tight overflow-visible;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-secondary-900/60 backdrop-blur-xl border border-white/5;
-  }
-  
-  .glass-card {
-    @apply bg-secondary-900/40 backdrop-blur-md border border-white/10 shadow-2xl;
-  }
-  
-  .glass-header {
-    @apply bg-secondary-950/80 backdrop-blur-xl border-b border-white/5;
-  }
-
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-secondary-100 to-secondary-400;
-  }
-  
-  .text-gradient-primary {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 to-primary-600;
-  }
-  
-  .glow-primary {
-    box-shadow: 0 0 20px -5px var(--color-primary-500);
+  .text-highlight {
+    @apply text-accent-500;
   }
   
   .container-width {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  .noise-overlay {
-    position: relative;
+  .footer-dark {
+    @apply bg-[#020617] text-slate-400 border-t border-slate-900;
   }
-  .noise-overlay::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.05;
-    pointer-events: none;
-    z-index: 10;
+
+  .glass-header {
+    @apply bg-white/90 backdrop-blur-2xl border-b border-slate-200/50;
   }
 }
 
 @layer base {
   ::-webkit-scrollbar {
-    width: 10px;
+    width: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: transparent;
+    @apply bg-transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--color-secondary-800);
-    border-radius: 5px;
-    border: 3px solid var(--color-secondary-950);
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary-900;
+    @apply bg-slate-300 rounded-full hover:bg-slate-400;
   }
 }

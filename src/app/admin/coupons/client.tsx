@@ -8,7 +8,7 @@ export function CouponsClientConfig() {
     return (
         <Link
             href="/admin/coupons/create"
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm shadow-primary-200"
+            className="bg-slate-900 hover:bg-black text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2 group"
         >
             <Plus size={18} />
             Add Coupon

@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Copy, Check, ExternalLink, X, Scissors } from 'lucide-react';
+import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { voteCoupon } from '@/actions/coupon';
 import Link from 'next/link';
@@ -28,14 +28,10 @@ export function CouponCard({ coupon, layout = 'vertical' }: CouponCardProps) {
 
     const handleAction = (e: React.MouseEvent) => {
         e.preventDefault();
-
-        // Open the tracking link in a new tab
         const link = coupon.trackingLink || coupon.store?.affiliateLink || '#';
         if (link !== '#') {
             window.open(link, '_blank');
         }
-
-        // Show modal for all types
         setShowModal(true);
     };
 
@@ -50,104 +46,52 @@ export function CouponCard({ coupon, layout = 'vertical' }: CouponCardProps) {
         setShowModal(false);
     };
 
-    // Modal Component
     const Modal = () => {
         if (!showModal) return null;
 
         return (
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200" onClick={closeModal}>
-                <div className="bg-secondary-900 border border-secondary-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
-                    {/* Header */}
-                    <div className="bg-secondary-800/50 p-6 flex flex-col items-center text-center border-b border-secondary-800 relative">
-                        <button
-                            onClick={closeModal}
-                            className="absolute right-4 top-4 text-secondary-400 hover:text-white p-1.5 rounded-full hover:bg-secondary-800/50 transition-all"
-                        >
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md" onClick={closeModal}>
+                <div className="bg-white border border-slate-200 rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden relative" onClick={e => e.stopPropagation()}>
+                    <div className="bg-slate-50 p-8 flex flex-col items-center text-center border-b border-slate-100 relative">
+                        <button onClick={closeModal} className="absolute right-6 top-6 text-slate-400 hover:text-slate-900 p-2 rounded-full hover:bg-white transition-all shadow-sm">
                             <X size={20} />
                         </button>
-
-                        <div className="w-16 h-16 bg-white rounded-lg shadow-sm border border-secondary-700 flex items-center justify-center mb-4 p-2">
-                            {coupon.store?.logoUrl ? (
-                                <img src={coupon.store.logoUrl} alt={coupon.store?.name} className="w-full h-full object-contain" />
-                            ) : (
-                                <span className="font-bold text-secondary-900 text-xl">{coupon.store?.name?.substring(0, 1)}</span>
-                            )}
+                        <div className="w-16 h-16 bg-white rounded-2xl shadow-xl border border-slate-100 flex items-center justify-center mb-6 p-4">
+                            {coupon.store?.logoUrl ? <img src={coupon.store.logoUrl} alt={coupon.store?.name} className="w-full h-full object-contain" /> : <span className="font-black text-slate-200 text-2xl">{coupon.store?.name?.substring(0, 1)}</span>}
                         </div>
-                        <h3 className="text-xl font-bold text-white break-words w-full px-4">{coupon.title}</h3>
-                        <p className="text-secondary-400 text-sm mt-1">at <span className="text-primary-400">{coupon.store?.name}</span></p>
+                        <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter leading-tight">{coupon.title}</h3>
+                        <p className="text-slate-500 text-[10px] font-black mt-2 uppercase tracking-widest">AT <span className="text-accent-500">{coupon.store?.name}</span></p>
                     </div>
 
-                    {/* Body */}
                     <div className="p-8 flex flex-col items-center gap-6">
                         {coupon.couponType === 'Code' ? (
-                            <div className="text-center space-y-2 w-full text-center">
-                                <p className="text-sm font-semibold text-secondary-400 uppercase tracking-wide">Copy and paste this code at {coupon.store?.name}</p>
+                            <div className="text-center space-y-4 w-full">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">COPY CODE AND REDEEM AT {coupon.store?.name}</p>
                                 <div className="relative group cursor-pointer" onClick={handleCopy}>
-                                    <div className="bg-secondary-950 border-2 border-dashed border-secondary-700 rounded-xl px-8 py-4 flex items-center gap-4 min-w-[240px] justify-center hover:border-primary-500 hover:bg-primary-900/10 transition-all">
-                                        <span className="text-2xl font-mono font-bold text-primary-400 tracking-wider select-all">{coupon.code}</span>
-                                        <button className="bg-primary-600 hover:bg-primary-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold ml-2 transition-colors">Copy</button>
+                                    <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl px-8 py-5 flex items-center gap-4 justify-center hover:bg-white transition-all shadow-inner">
+                                        <span className="text-3xl font-mono font-black text-accent-600 tracking-wider text-center">{coupon.code}</span>
+                                        <button className="bg-slate-900 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase transition-colors">COPY</button>
                                     </div>
-                                    {copied && <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-primary-400 font-bold animate-in fade-in slide-in-from-bottom-1">Copied!</span>}
+                                    {copied && <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] text-accent-600 font-black uppercase tracking-widest animate-in fade-in slide-in-from-bottom-1">COPIED!</span>}
                                 </div>
-                                <div className="pt-4">
-                                    <a
-                                        href={coupon.trackingLink || coupon.store?.affiliateLink || '#'}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-block w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary-900/20 transition-all active:scale-95 text-center"
-                                    >
-                                        Go to {coupon.store?.name}
-                                    </a>
+                                <div className="pt-6">
+                                    <a href={coupon.trackingLink || coupon.store?.affiliateLink || '#'} target="_blank" rel="noopener noreferrer" className="inline-block w-full bg-slate-900 hover:bg-black text-white font-black py-4 rounded-2xl transition-all uppercase text-xs tracking-[0.3em] shadow-xl shadow-slate-900/10">GO TO {coupon.store?.name}</a>
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-center space-y-4 w-full text-center">
-                                <p className="text-secondary-300 font-medium px-4">No code required! The discount will be automatically applied when you click the button below.</p>
-                                <a
-                                    href={coupon.trackingLink || coupon.store?.affiliateLink || '#'}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-block w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary-900/20 transition-all active:scale-95 text-center"
-                                >
-                                    Go to Deal
-                                </a>
+                            <div className="text-center space-y-6 w-full">
+                                <p className="text-slate-400 font-medium italic text-sm">No code required! The discount will be applied automatically.</p>
+                                <a href={coupon.trackingLink || coupon.store?.affiliateLink || '#'} target="_blank" rel="noopener noreferrer" className="inline-block w-full bg-slate-900 hover:bg-black text-white font-black py-4 rounded-2xl transition-all uppercase text-xs tracking-[0.3em] shadow-xl shadow-slate-900/10 active:scale-95">ACTIVATE DEAL</a>
                             </div>
                         )}
 
-                        {/* Did it work? */}
-                        <div className="flex flex-col items-center gap-3 pt-4 border-t border-secondary-800 w-full">
-                            <p className="text-sm font-medium text-secondary-500">
-                                {hasVoted ? 'Thanks for your feedback!' : 'Did it work?'}
-                            </p>
+                        <div className="flex flex-col items-center gap-4 pt-6 border-t border-slate-100 w-full">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{hasVoted ? 'THANK YOU!' : 'DID IT WORK?'}</p>
                             <div className="flex gap-4">
-                                <button
-                                    disabled={hasVoted}
-                                    onClick={() => handleVote(false)}
-                                    className={cn(
-                                        "flex items-center gap-2 px-4 py-2 rounded-full border transition-all group",
-                                        hasVoted ? "opacity-50 cursor-default border-secondary-800" : "border-secondary-700 hover:bg-red-900/20 hover:border-red-800"
-                                    )}
-                                >
-                                    <span className="text-2xl group-hover:scale-110 transition-transform">🙁</span>
-                                    <span className="text-sm font-bold text-secondary-400 group-hover:text-red-400">{coupon.votesDown || 0}</span>
-                                </button>
-                                <button
-                                    disabled={hasVoted}
-                                    onClick={() => handleVote(true)}
-                                    className={cn(
-                                        "flex items-center gap-2 px-4 py-2 rounded-full border transition-all group",
-                                        hasVoted ? "opacity-50 cursor-default border-secondary-800" : "border-secondary-700 hover:bg-green-900/20 hover:border-green-800"
-                                    )}
-                                >
-                                    <span className="text-2xl group-hover:scale-110 transition-transform">😊</span>
-                                    <span className="text-sm font-bold text-secondary-400 group-hover:text-green-400">{coupon.votesUp || 0}</span>
-                                </button>
+                                <button disabled={hasVoted} onClick={() => handleVote(false)} className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-100 bg-white hover:bg-slate-50 transition-all font-black text-slate-500 text-[11px] shadow-sm">🙁 {coupon.votesDown || 0}</button>
+                                <button disabled={hasVoted} onClick={() => handleVote(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-100 bg-white hover:bg-slate-50 transition-all font-black text-slate-500 text-[11px] shadow-sm">😊 {coupon.votesUp || 0}</button>
                             </div>
                         </div>
-
-                        <button onClick={closeModal} className="text-sm text-secondary-500 hover:text-secondary-300 hover:underline">
-                            Close and continue to {coupon.store?.name}
-                        </button>
                     </div>
                 </div>
             </div>
@@ -158,136 +102,79 @@ export function CouponCard({ coupon, layout = 'vertical' }: CouponCardProps) {
         return (
             <>
                 <Modal />
-                <div className="glass-card hover:border-primary-500/30 hover:shadow-2xl hover:shadow-primary-900/10 rounded-2xl overflow-hidden transition-all duration-300 group flex flex-col sm:flex-row items-center p-5 gap-6 relative">
-                    {/* Logo Section */}
-                    <div className="w-full sm:w-32 h-24 sm:h-24 flex-shrink-0 bg-white rounded-lg flex items-center justify-center p-2 border border-secondary-700">
-                        {coupon.imageUrl ? (
-                            <img src={coupon.imageUrl} alt={coupon.title} className="w-full h-full object-contain" />
-                        ) : coupon.store?.logoUrl ? (
-                            <img src={coupon.store.logoUrl} alt={coupon.store.name} className="w-full h-full object-contain" />
-                        ) : (
-                            <div className="text-xl font-bold text-secondary-900">{coupon.store?.name?.substring(0, 2).toUpperCase()}</div>
-                        )}
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="flex-1 min-w-0 w-full text-center sm:text-left">
-                        <div className="flex flex-wrap items-center gap-2 mb-1 justify-center sm:justify-start">
-                            {coupon.isVerified && <span className="text-[10px] font-bold bg-primary-900/30 text-primary-400 border border-primary-800 px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1"><Check size={10} strokeWidth={4} /> Verified</span>}
-                            {coupon.isExclusive && <span className="text-[10px] font-bold bg-purple-900/30 text-purple-300 border border-purple-800 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Exclusive</span>}
-
-                            {/* Vote Counts on Card */}
-                            <div className="flex items-center gap-2 ml-auto sm:ml-0 bg-secondary-900 px-2 py-0.5 rounded-full border border-secondary-800">
-                                <div className="flex items-center gap-1 grayscale-[0.5]">
-                                    <span className="text-xs">😊</span>
-                                    <span className="text-[10px] font-bold text-secondary-400">{coupon.votesUp || 0}</span>
-                                </div>
-                                <div className="flex items-center gap-1 grayscale-[0.5]">
-                                    <span className="text-xs">🙁</span>
-                                    <span className="text-[10px] font-bold text-secondary-400">{coupon.votesDown || 0}</span>
-                                </div>
+                <div className="group relative bg-white border border-slate-200 rounded-[2rem] transition-all duration-300 hover:shadow-xl hover:shadow-slate-900/5 overflow-hidden w-full">
+                    <div className="flex flex-col md:flex-row items-stretch">
+                        <div className="md:w-32 bg-slate-50 flex flex-col items-center justify-center p-4 gap-2 border-b md:border-b-0 md:border-r border-dashed border-slate-200">
+                            <div className="w-12 h-12 bg-white rounded-xl p-2.5 flex items-center justify-center shadow-sm border border-slate-100 transform group-hover:scale-105 transition-transform">
+                                {coupon.store?.logoUrl ? <img src={coupon.store.logoUrl} alt={coupon.store.name} className="w-full h-full object-contain" /> : <span className="text-xl font-black text-slate-200">{coupon.store?.name?.charAt(0)}</span>}
+                            </div>
+                            <div className="text-center">
+                                <span className="text-[7px] font-black text-accent-500 uppercase tracking-[0.2em]">{coupon.couponType}</span>
+                                <div className="text-[14px] font-black text-slate-900 uppercase leading-none mt-0.5 whitespace-nowrap">{coupon.discountValue || 'DEAL'}</div>
                             </div>
                         </div>
-                        <h3 className="text-lg font-bold text-secondary-100 mb-1 lg:pr-20 title-clamp group-hover:text-primary-400 transition-colors">{coupon.title}</h3>
-                        <p className="text-secondary-400 text-sm line-clamp-2 md:line-clamp-1 mb-2">{coupon.description}</p>
-                    </div>
 
-                    {/* Action Section */}
-                    <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-                        {coupon.couponType === 'Code' ? (
-                            <button
-                                onClick={handleAction}
-                                className="w-full sm:w-auto relative group overflow-hidden bg-secondary-900/50 border border-primary-500/50 hover:border-primary-400 text-primary-300 hover:text-white font-bold px-6 py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary-900/10"
-                            >
-                                <Scissors size={18} className="rotate-[-45deg] group-hover:rotate-0 transition-transform duration-300" />
-                                <span className="relative z-10">Show Code</span>
+                        <div className="flex-1 p-5 md:px-8 md:py-6 space-y-2 min-w-0 flex flex-col justify-center">
+                            <div className="flex flex-wrap items-center gap-2">
+                                {coupon.isVerified && <span className="text-[6px] font-black bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-widest">VERIFIED</span>}
+                                {coupon.isExclusive && <span className="text-[6px] font-black bg-accent-50 text-accent-600 px-2 py-0.5 rounded border border-accent-100 uppercase tracking-widest">EXCLUSIVE</span>}
+                            </div>
+                            {/* Title is strictly 1-line as requested */}
+                            <h3 className="text-lg font-black text-slate-900 leading-tight uppercase tracking-tighter truncate w-full">{coupon.title}</h3>
+                            <p className="text-slate-500 text-[11px] italic line-clamp-1 max-w-full">{coupon.description}</p>
+                            <div className="flex items-center gap-3 pt-0.5">
+                                <div className="text-[9px] font-black text-slate-400 flex items-center gap-1 uppercase tracking-widest">😊 {coupon.votesUp || 0}</div>
+                                <div className="text-[9px] font-black text-slate-400 flex items-center gap-1 uppercase tracking-widest">🙁 {coupon.votesDown || 0}</div>
+                            </div>
+                        </div>
+
+                        <div className="p-5 md:p-6 flex items-center justify-center">
+                            <button onClick={handleAction} className="h-10 px-8 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[9px] uppercase tracking-[0.3em] transition-all shadow-lg active:scale-95 whitespace-nowrap">
+                                {coupon.couponType === 'Code' ? 'VIEW CODE' : 'GET OFFER'}
                             </button>
-                        ) : (
-                            <button
-                                onClick={handleAction}
-                                className="w-full sm:w-auto bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white text-sm font-bold px-8 py-3 rounded-xl transition-all shadow-lg shadow-primary-600/20 hover:shadow-primary-600/40 active:scale-95 transform hover:-translate-y-0.5"
-                            >
-                                Get Deal
-                            </button>
-                        )}
+                        </div>
                     </div>
                 </div>
             </>
         );
     }
 
-    // Vertical Layout (Default - Box Card)
     return (
         <>
             <Modal />
-            <div className="glass-card flex flex-col h-full relative rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary-900/20 hover:border-primary-500/30 group">
-                <div className="p-5 flex-1">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 flex-shrink-0 bg-white rounded-lg flex items-center justify-center overflow-hidden border border-secondary-700 p-1">
-                            {coupon.imageUrl ? (
-                                <img src={coupon.imageUrl} alt={coupon.title} className="w-full h-full object-contain" />
-                            ) : coupon.store?.logoUrl ? (
-                                <img src={coupon.store.logoUrl} alt={coupon.store.name} className="w-full h-full object-contain" />
-                            ) : (
-                                <div className="text-sm font-bold text-secondary-900">{coupon.store?.name?.substring(0, 2).toUpperCase()}</div>
+            <div className="flex flex-col bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-slate-900/5 h-full text-center items-center">
+                <div className="p-8 pb-5 flex-1 flex flex-col items-center w-full">
+                    <div className="w-full flex justify-center mb-6">
+                        <div className="relative">
+                            <div className="w-20 h-20 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                                {coupon.store?.logoUrl ? <img src={coupon.store.logoUrl} alt={coupon.store.name} className="w-full h-full object-contain" /> : <span className="text-2xl font-black text-slate-200">{coupon.store?.name?.charAt(0)}</span>}
+                            </div>
+                            {coupon.discountValue && (
+                                <div className="absolute -top-3 -right-3 bg-accent-500 text-white text-[9px] font-black px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg shadow-accent-500/20">
+                                    {coupon.discountValue}
+                                </div>
                             )}
                         </div>
-                        <div>
-                            <Link href={`/store/${coupon.store?.slug}`} className="text-xs text-secondary-400 hover:text-primary-400 font-bold uppercase tracking-wider block mb-0.5 transition-colors">{coupon.store?.name}</Link>
-                            <div className="flex items-center gap-2">
-                                {coupon.isVerified && <span className="text-[10px] font-bold text-primary-400 flex items-center gap-0.5"><Check size={10} /> Verified</span>}
-                                <div className="flex items-center gap-2 bg-secondary-900 px-1.5 py-0.5 rounded-full border border-secondary-800">
-                                    <div className="flex items-center gap-0.5">
-                                        <span className="text-[10px]">😊</span>
-                                        <span className="text-[10px] font-bold text-secondary-400">{coupon.votesUp || 0}</span>
-                                    </div>
-                                    <div className="flex items-center gap-0.5">
-                                        <span className="text-[10px]">🙁</span>
-                                        <span className="text-[10px] font-bold text-secondary-400">{coupon.votesDown || 0}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <h3 className="text-xl font-bold text-white leading-tight mb-3 line-clamp-2 h-[3.5rem] group-hover:text-primary-300 transition-colors">{coupon.title}</h3>
-
-                    <div className="flex items-center gap-2 mb-4 flex-wrap">
-                        {coupon.couponType === 'Code' ? (
-                            <span className="text-xs font-bold bg-secondary-800 text-secondary-300 px-2 py-1 rounded border border-secondary-700">CODE</span>
-                        ) : (
-                            <span className="text-xs font-bold bg-primary-900/30 text-primary-400 px-2 py-1 rounded border border-primary-800">DEAL</span>
-                        )}
-                        {coupon.discountValue && (
-                            <span className="text-xs font-bold text-primary-300 bg-primary-900/20 px-2 py-1 rounded border border-primary-800">
-                                {coupon.discountValue}
-                            </span>
-                        )}
+                    <div className="space-y-4 w-full">
+                        <Link href={`/store/${coupon.store?.slug}`} className="text-[10px] font-black text-accent-500 uppercase tracking-[0.2em] block hover:underline">{coupon.store?.name}</Link>
+                        {/* Vertical layout remains flexible but limited to preserve space */}
+                        <h3 className="text-xl font-black text-slate-900 leading-tight uppercase tracking-tighter line-clamp-2 h-[3.5rem] px-2">{coupon.title}</h3>
+                        <p className="text-slate-500 text-xs italic line-clamp-2 max-w-[200px] mx-auto opacity-70">{coupon.description}</p>
                     </div>
 
-                    <p className="text-sm text-secondary-400 line-clamp-2 mb-4 h-[2.5rem]">
-                        {coupon.description || 'Click to see details and redeem this offer.'}
-                    </p>
+                    <div className="flex items-center justify-center gap-4 pt-6 mt-auto border-t border-slate-50 w-full">
+                        <span className="text-[10px] font-black text-slate-400 flex items-center gap-1.5 uppercase tracking-widest">😊 {coupon.votesUp || 0}</span>
+                        <div className="w-px h-3 bg-slate-100" />
+                        <span className="text-[10px] font-black text-slate-400 flex items-center gap-1.5 uppercase tracking-widest">🙁 {coupon.votesDown || 0}</span>
+                    </div>
                 </div>
 
-                <div className="p-4 bg-secondary-950/30 border-t border-secondary-800/50 mt-auto backdrop-blur-sm">
-                    {coupon.couponType === 'Code' ? (
-                        <button
-                            onClick={handleAction}
-                            className="w-full flex items-center justify-center gap-2 bg-secondary-900/80 border border-primary-500/30 hover:border-primary-400 text-primary-300 hover:text-white font-mono font-bold py-3 rounded-xl transition-all hover:bg-primary-600/10 group/btn"
-                        >
-                            <span className="relative z-10 flex items-center gap-2">
-                                Show Code <span className="bg-secondary-950 text-secondary-400 text-[10px] px-2 py-0.5 rounded border border-secondary-800 group-hover/btn:border-primary-500/30 transition-colors">{coupon.code?.slice(0, 4)}***</span>
-                            </span>
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleAction}
-                            className="w-full bg-gradient-to-r from-primary-700 to-primary-600 hover:from-primary-600 hover:to-primary-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-primary-900/20 hover:shadow-primary-600/20 active:scale-95"
-                        >
-                            Get Deal
-                        </button>
-                    )}
+                <div className="px-8 pb-8 pt-0 w-full">
+                    <button onClick={handleAction} className="w-full h-14 rounded-2xl bg-slate-900 hover:bg-black text-white font-black text-[10px] uppercase tracking-[0.3em] transition-all shadow-xl shadow-slate-900/10 active:scale-95">
+                        {coupon.couponType === 'Code' ? 'REVEAL CODE' : 'GET OFFER'}
+                    </button>
                 </div>
             </div>
         </>

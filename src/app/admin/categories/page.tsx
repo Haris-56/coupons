@@ -1,8 +1,9 @@
 
 import { connectToDatabase } from '@/lib/db';
 import Category from '@/models/Category';
-import { Search, Plus, Tag } from 'lucide-react';
+import { Search, Plus, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 import { AdminActionMenu } from '@/components/admin/AdminActionMenu';
 import { deleteCategory } from '@/actions/category';
 
@@ -42,102 +43,103 @@ export default async function CategoriesPage(props: { searchParams: Promise<any>
     const { categories, total, totalPages } = await getCategories(q, page, limit);
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-secondary-900">Categories</h1>
-                <Link
-                    href="/admin/categories/create"
-                    className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
-                >
-                    <Plus size={18} />
-                    Add Category
-                </Link>
-            </div>
+        <div className="space-y-8 pb-16">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="space-y-1">
+                    <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+                        Categories
+                    </h1>
+                    <div className="h-1 w-12 bg-accent-500 rounded-full"></div>
+                </div>
 
-            <div className="bg-white border border-secondary-200 rounded-xl overflow-hidden shadow-sm">
-                <div className="p-4 border-b border-secondary-100 flex items-center gap-4 bg-secondary-50/50">
-                    <form className="relative flex-1 max-w-sm">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400" size={18} />
+                <Link href="/admin/categories/create" className="bg-slate-900 hover:bg-black text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2 group">
+                    <Plus size={18} /> Add Category
+                </Link>
+            </header>
+
+            <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                {/* Search & Stats */}
+                <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row items-center gap-4 bg-slate-50/30">
+                    <form className="relative flex-1 w-full max-w-md group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-accent-500 transition-colors pointer-events-none" size={18} />
                         <input
                             name="q"
                             defaultValue={q}
-                            placeholder="Search categories..."
-                            className="w-full pl-10 pr-4 py-2 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+                            placeholder="Find categories..."
+                            className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 shadow-sm transition-all"
                         />
                     </form>
-                    <div className="text-sm text-secondary-500 ml-auto">
-                        Total: <span className="font-bold text-secondary-900">{total}</span>
+                    <div className="text-slate-500 text-xs font-medium ml-auto">
+                        <span className="bg-slate-100 px-3 py-1 rounded-full font-bold text-slate-700">{total}</span> Total Records
                     </div>
                 </div>
+
+                {/* Table */}
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm text-secondary-600">
-                        <thead className="bg-secondary-50 text-secondary-700 font-semibold uppercase text-xs border-b border-secondary-200">
+                    <table className="w-full text-left">
+                        <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase font-bold tracking-wider border-b border-slate-100">
                             <tr>
-                                <th className="px-6 py-4">Name</th>
-                                <th className="px-6 py-4">Slug</th>
+                                <th className="px-6 py-4 w-16 text-center">S.No</th>
+                                <th className="px-6 py-4">Category Name</th>
+                                <th className="px-6 py-4 text-center">Slug</th>
                                 <th className="px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-secondary-100">
-                            {categories.map((cat: any) => (
-                                <tr key={cat._id} className="hover:bg-secondary-50/50 transition-colors group">
-                                    <td className="px-6 py-4 font-medium text-secondary-900">{cat.name}</td>
-                                    <td className="px-6 py-4 font-mono text-xs text-secondary-500">{cat.slug}</td>
-                                    <td className="px-6 py-4 text-right">
-                                        <AdminActionMenu
-                                            editUrl={`/admin/categories/${cat._id}/edit`}
-                                            onDelete={async () => {
-                                                'use server';
-                                                return await deleteCategory(cat._id);
-                                            }}
-                                            itemName="category"
-                                        />
-                                    </td>
-                                </tr>
-                            ))}
-                            {categories.length === 0 && (
+                        <tbody className="divide-y divide-slate-100">
+                            {categories.length === 0 ? (
                                 <tr>
-                                    <td colSpan={3} className="px-6 py-12 text-center text-secondary-400">
-                                        <Tag className="mx-auto mb-2 opacity-50" />
-                                        No categories found.
+                                    <td colSpan={4} className="px-6 py-32 text-center text-slate-400 font-medium italic">
+                                        No categories found in registry
                                     </td>
                                 </tr>
+                            ) : (
+                                categories.map((cat: any, index: number) => (
+                                    <tr key={cat._id} className="hover:bg-slate-50/50 transition-colors group">
+                                        <td className="px-6 py-4 font-bold text-xs text-slate-400 text-center tabular-nums">
+                                            {(page - 1) * limit + index + 1}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="font-bold text-slate-700 group-hover:text-accent-600 transition-colors text-sm">
+                                                {cat.name}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <code className="bg-slate-50 px-2 py-1 rounded text-[11px] text-slate-500 font-medium">/{cat.slug}</code>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <AdminActionMenu
+                                                editUrl={`/admin/categories/${cat._id}/edit`}
+                                                onDelete={async () => {
+                                                    'use server';
+                                                    return await deleteCategory(cat._id);
+                                                }}
+                                                itemName="category"
+                                            />
+                                        </td>
+                                    </tr>
+                                ))
                             )}
                         </tbody>
                     </table>
                 </div>
 
                 {/* Pagination */}
-                <div className="p-4 border-t border-secondary-100 flex items-center justify-between text-sm text-secondary-500 bg-secondary-50/30">
-                    <span>Showing {(page - 1) * limit + 1} to {Math.min(page * limit, total)} of {total} entries</span>
-                    <div className="flex gap-1">
+                <div className="p-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50/30">
+                    <span className="text-xs text-slate-500 font-medium">
+                        Showing <span className="text-slate-900 font-bold">{(page - 1) * limit + 1}</span> to <span className="text-slate-900 font-bold">{Math.min(page * limit, total)}</span> of <span className="text-slate-900 font-bold">{total}</span>
+                    </span>
+                    <div className="flex gap-2">
                         <Link
-                            href={`/admin/categories?page=1&q=${q}`}
-                            className={`px-3 py-1 border border-secondary-200 rounded bg-white hover:bg-secondary-50 ${page === 1 ? 'pointer-events-none opacity-50' : ''}`}
+                            href={`/admin/categories?page=${Math.max(1, page - 1)}&q=${q}`}
+                            className={`w-10 h-10 flex items-center justify-center border border-slate-200 rounded-xl bg-white text-slate-400 hover:text-accent-500 hover:border-accent-200 transition-all shadow-sm ${page === 1 ? 'pointer-events-none opacity-50' : ''}`}
                         >
-                            First
+                            <ChevronLeft size={18} />
                         </Link>
-                        {[...Array(totalPages)].map((_, i) => {
-                            const p = i + 1;
-                            if (totalPages > 5 && Math.abs(p - page) > 1 && p !== 1 && p !== totalPages) {
-                                if (p === 2 || p === totalPages - 1) return <span key={p} className="px-2">...</span>;
-                                return null;
-                            }
-                            return (
-                                <Link
-                                    key={p}
-                                    href={`/admin/categories?page=${p}&q=${q}`}
-                                    className={`px-3 py-1 border border-secondary-200 rounded ${page === p ? 'bg-primary-600 text-white border-primary-600' : 'bg-white hover:bg-secondary-50'}`}
-                                >
-                                    {p}
-                                </Link>
-                            );
-                        })}
                         <Link
                             href={`/admin/categories?page=${Math.min(totalPages, page + 1)}&q=${q}`}
-                            className={`px-3 py-1 border border-secondary-200 rounded bg-white hover:bg-secondary-50 ${page === totalPages || totalPages === 0 ? 'pointer-events-none opacity-50' : ''}`}
+                            className={`w-10 h-10 flex items-center justify-center border border-slate-200 rounded-xl bg-white text-slate-400 hover:text-accent-500 hover:border-accent-200 transition-all shadow-sm ${page === totalPages || totalPages === 0 ? 'pointer-events-none opacity-50' : ''}`}
                         >
-                            Next
+                            <ChevronRight size={18} />
                         </Link>
                     </div>
                 </div>

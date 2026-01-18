@@ -1,10 +1,12 @@
+
 import { connectToDatabase } from '@/lib/db';
 import User from '@/models/User';
-import { Search, Edit, Trash2, CheckCircle, XCircle, User as UserIcon } from 'lucide-react';
+import { Search, Edit, Trash2, CheckCircle, XCircle, User as UserIcon, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { AdminActionMenu } from '@/components/admin/AdminActionMenu';
 import { deleteUser } from '@/actions/user';
 import { UserToolbar } from './UserToolbar';
+import { cn } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,133 +47,117 @@ export default async function UsersPage(props: { searchParams: Promise<any> }) {
     const { users, total, totalPages } = await getUsers(q, page, limit);
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-800">Users</h1>
-                    <div className="h-1 w-10 bg-blue-600 rounded-full mt-1"></div>
+        <div className="space-y-8 pb-16">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="space-y-1">
+                    <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+                        Users
+                    </h1>
+                    <div className="h-1 w-12 bg-accent-500 rounded-full"></div>
                 </div>
 
-                <Link href="/admin/users/create" className="bg-[#2c3e50] hover:bg-[#34495e] text-white px-5 py-2.5 rounded-lg font-medium transition-colors flex items-center gap-2 shadow-lg shadow-blue-900/10">
-                    + ADD NEW
+                <Link href="/admin/users/create" className="bg-slate-900 hover:bg-black text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2 group">
+                    <Plus size={18} /> Add User
                 </Link>
-            </div>
+            </header>
 
-            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
                 <UserToolbar initialLimit={limit} initialQuery={q} />
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm text-slate-600">
-                        <thead className="bg-[#fafbfc] border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                    <table className="w-full text-left">
+                        <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase font-bold tracking-wider border-b border-slate-100">
                             <tr>
-                                <th className="px-6 py-4">Id</th>
-                                <th className="px-6 py-4">Name</th>
-                                <th className="px-6 py-4">Email</th>
-                                <th className="px-6 py-4">Role</th>
-                                <th className="px-6 py-4 text-center">Verified</th>
+                                <th className="px-6 py-4 w-16 text-center">S.No</th>
+                                <th className="px-6 py-4">User Details</th>
+                                <th className="px-6 py-4">Email Address</th>
+                                <th className="px-6 py-4 text-center">Role</th>
                                 <th className="px-6 py-4 text-center">Status</th>
                                 <th className="px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {users.map((user: any, index: number) => (
-                                <tr key={user._id} className="hover:bg-slate-50/80 transition-colors">
-                                    <td className="px-6 py-4 font-mono text-slate-400">#{(page - 1) * limit + index + 1}</td>
-                                    <td className="px-6 py-4 font-medium text-slate-800">{user.name}</td>
-                                    <td className="px-6 py-4 text-slate-600">{user.email}</td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold border ${user.role === 'ADMIN'
-                                            ? 'bg-indigo-50 text-indigo-700 border-indigo-100'
-                                            : user.role === 'EDITOR' ? 'bg-amber-50 text-amber-700 border-amber-100'
-                                                : 'bg-slate-100 text-slate-600 border-slate-200'
-                                            }`}>
-                                            {user.role}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <div className="flex justify-center">
-                                            <CheckCircle className="text-emerald-500 w-5 h-5 fill-emerald-50" />
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <div className="flex justify-center">
-                                            <CheckCircle className="text-emerald-500 w-5 h-5 fill-emerald-50" />
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <AdminActionMenu
-                                            editUrl={`/admin/users/edit/${user._id}`}
-                                            onDelete={async () => {
-                                                'use server';
-                                                return await deleteUser(user._id);
-                                            }}
-                                            itemName="user"
-                                        />
-                                    </td>
-                                </tr>
-                            ))}
-                            {users.length === 0 && (
+                            {users.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-secondary-400">
-                                        <UserIcon className="mx-auto mb-2 opacity-50" />
-                                        No users found.
+                                    <td colSpan={6} className="px-6 py-32 text-center text-slate-400 font-medium italic">
+                                        No users found in directory
                                     </td>
                                 </tr>
+                            ) : (
+                                users.map((user: any, index: number) => (
+                                    <tr key={user._id} className="hover:bg-slate-50/50 transition-colors group">
+                                        <td className="px-6 py-4 font-bold text-xs text-slate-400 text-center tabular-nums">
+                                            {(page - 1) * limit + index + 1}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-accent-500 group-hover:bg-accent-50 transition-all">
+                                                    <UserIcon size={18} />
+                                                </div>
+                                                <span className="font-bold text-slate-700 group-hover:text-accent-600 transition-colors text-sm">
+                                                    {user.name}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-slate-500 font-medium">
+                                            {user.email}
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className={cn(
+                                                "inline-flex px-3 py-1 rounded-full text-[10px] font-bold border",
+                                                user.role === 'ADMIN'
+                                                    ? 'bg-slate-900 text-white border-slate-900'
+                                                    : user.role === 'EDITOR'
+                                                        ? 'bg-accent-50 text-accent-700 border-accent-100'
+                                                        : 'bg-slate-50 text-slate-500 border-slate-200'
+                                            )}>
+                                                {user.role}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <div className="flex justify-center">
+                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 italic">
+                                                    Active
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <AdminActionMenu
+                                                editUrl={`/admin/users/edit/${user._id}`}
+                                                onDelete={async () => {
+                                                    'use server';
+                                                    return await deleteUser(user._id);
+                                                }}
+                                                itemName="user"
+                                            />
+                                        </td>
+                                    </tr>
+                                ))
                             )}
                         </tbody>
                     </table>
                 </div>
 
-                <div className="p-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-slate-50/30">
-                    <span>Showing {(page - 1) * limit + 1} to {Math.min(page * limit, total)} of {total} entries</span>
-                    <div className="flex gap-1">
-                        <Link
-                            href={`/admin/users?page=1&q=${q}`}
-                            className={`px-3 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50 ${page === 1 ? 'pointer-events-none opacity-50' : ''}`}
-                        >
-                            First
-                        </Link>
+                {/* Pagination */}
+                <div className="p-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50/30">
+                    <span className="text-xs text-slate-500 font-medium">
+                        Showing <span className="text-slate-900 font-bold">{(page - 1) * limit + 1}</span> to <span className="text-slate-900 font-bold">{Math.min(page * limit, total)}</span> of <span className="text-slate-900 font-bold">{total}</span>
+                    </span>
+                    <div className="flex gap-2">
                         <Link
                             href={`/admin/users?page=${Math.max(1, page - 1)}&q=${q}`}
-                            className={`px-3 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50 ${page === 1 ? 'pointer-events-none opacity-50' : ''}`}
+                            className={`w-10 h-10 flex items-center justify-center border border-slate-200 rounded-xl bg-white text-slate-400 hover:text-accent-500 hover:border-accent-200 transition-all shadow-sm ${page === 1 ? 'pointer-events-none opacity-50' : ''}`}
                         >
-                            Previous
+                            <ChevronLeft size={18} />
                         </Link>
-
-                        {[...Array(totalPages)].map((_, i) => {
-                            const p = i + 1;
-                            // Only show current, first, last, and relative pages if many
-                            if (totalPages > 5 && Math.abs(p - page) > 1 && p !== 1 && p !== totalPages) {
-                                if (p === 2 || p === totalPages - 1) return <span key={p} className="px-2">...</span>;
-                                return null;
-                            }
-
-                            return (
-                                <Link
-                                    key={p}
-                                    href={`/admin/users?page=${p}&q=${q}`}
-                                    className={`px-3 py-1 border border-slate-200 rounded ${page === p ? 'bg-[#2c3e50] text-white' : 'bg-white hover:bg-slate-50'}`}
-                                >
-                                    {p}
-                                </Link>
-                            );
-                        })}
-
                         <Link
                             href={`/admin/users?page=${Math.min(totalPages, page + 1)}&q=${q}`}
-                            className={`px-3 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50 ${page === totalPages || totalPages === 0 ? 'pointer-events-none opacity-50' : ''}`}
+                            className={`w-10 h-10 flex items-center justify-center border border-slate-200 rounded-xl bg-white text-slate-400 hover:text-accent-500 hover:border-accent-200 transition-all shadow-sm ${page === totalPages || totalPages === 0 ? 'pointer-events-none opacity-50' : ''}`}
                         >
-                            Next
-                        </Link>
-                        <Link
-                            href={`/admin/users?page=${totalPages}&q=${q}`}
-                            className={`px-3 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50 ${page === totalPages || totalPages === 0 ? 'pointer-events-none opacity-50' : ''}`}
-                        >
-                            Last
+                            <ChevronRight size={18} />
                         </Link>
                     </div>
                 </div>
-
             </div>
         </div>
     );

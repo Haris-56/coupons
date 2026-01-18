@@ -16,16 +16,20 @@ export default async function EditEmailTemplatePage(props: { params: Promise<{ i
     }
 
     return (
-        <div className="pb-20">
-            <div className="flex items-center gap-4 mb-6">
-                <Link href="/admin/email-templates" className="bg-white border border-slate-200 p-2 rounded-full hover:bg-slate-50 text-slate-500 transition-colors shadow-sm">
-                    <ArrowLeft size={20} />
-                </Link>
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Email Template Editor</h1>
-                    <div className="h-1 w-12 bg-blue-600 rounded-full mt-1"></div>
+        <div className="space-y-8 pb-16">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                    <Link href="/admin/email-templates" className="bg-white border border-slate-200 p-3 rounded-xl hover:bg-slate-50 text-slate-500 transition-all shadow-sm">
+                        <ArrowLeft size={18} />
+                    </Link>
+                    <div className="space-y-1">
+                        <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+                            Edit Email Template
+                        </h1>
+                        <div className="h-1 w-12 bg-accent-500 rounded-full"></div>
+                    </div>
                 </div>
-            </div>
+            </header>
 
             <EmailTemplateForm template={JSON.parse(JSON.stringify(template))} />
         </div>

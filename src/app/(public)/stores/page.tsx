@@ -26,57 +26,57 @@ export default async function StoresPage(props: { searchParams: Promise<{ char?:
 
         if (selectedChar) {
             const firstChar = store.name.charAt(0).toUpperCase();
-            const charMatch = /^\d/.test(selectedChar)
-                ? firstChar === selectedChar
-                : firstChar === selectedChar;
-            return nameMatch && charMatch;
+            return nameMatch && firstChar === selectedChar;
         }
 
         return nameMatch;
     });
 
     return (
-        <div className="min-h-screen pb-20">
+        <div className="min-h-screen pb-32">
             {/* Header */}
-            <section className="pt-32 pb-16">
+            <section className="pt-24 pb-12">
                 <div className="container-width">
-                    <div className="space-y-4">
-                        <h2 className="text-secondary-500 font-bold uppercase tracking-[0.2em] text-sm">Brand Directory</h2>
-                        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight leading-none">STORES</h1>
-                        <p className="text-secondary-400 max-w-2xl font-medium">Browse our full collection of partner retailers and exclusive boutiques.</p>
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className="h-[2px] w-8 bg-accent-500" />
+                                <h2 className="text-accent-500 font-black uppercase tracking-[0.4em] text-[10px]">Brand Directory</h2>
+                            </div>
+                            <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter uppercase p-2 pr-16 bg-transparent">
+                                Stores
+                            </h1>
+                        </div>
+                        <div className="w-full md:w-[450px]">
+                            <form action="/stores" method="GET" className="relative group">
+                                {selectedChar && <input type="hidden" name="char" value={selectedChar} />}
+                                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-accent-500 transition-colors pointer-events-none">
+                                    <Search size={22} strokeWidth={2.5} />
+                                </div>
+                                <input
+                                    name="q"
+                                    type="text"
+                                    defaultValue={q}
+                                    placeholder="SEARCH MERCHANTS..."
+                                    className="w-full pl-16 pr-8 py-5 bg-white border border-slate-200 rounded-[1.5rem] focus:outline-none focus:border-accent-300 focus:shadow-2xl focus:shadow-accent-500/5 transition-all font-black text-xs text-slate-900 placeholder:text-slate-300 uppercase tracking-widest shadow-xl shadow-slate-900/5"
+                                />
+                            </form>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <div className="container-width space-y-12">
-                {/* Search & Filter */}
-                <div className="glass-card rounded-3xl p-8 md:p-10">
-                    {/* Search Bar */}
-                    <div className="max-w-xl mx-auto relative mb-12">
-                        <form action="/stores" method="GET">
-                            {selectedChar && <input type="hidden" name="char" value={selectedChar} />}
-                            <div className="relative group">
-                                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-secondary-500 group-focus-within:text-primary-400 transition-colors" size={20} />
-                                <input
-                                    name="q"
-                                    type="text"
-                                    defaultValue={q}
-                                    placeholder="Search your favorite store..."
-                                    className="w-full pl-14 pr-6 py-4 bg-secondary-900/50 border border-white/5 rounded-2xl focus:outline-none focus:border-primary-500/50 focus:bg-secondary-900 transition-all font-bold text-white placeholder:text-secondary-600"
-                                />
-                            </div>
-                        </form>
-                    </div>
-
-                    {/* A-Z Filter */}
-                    <div className="flex flex-wrap justify-center gap-2">
+                {/* A-Z Index Bar - Updated for Deep Purple Theme */}
+                <div className="sticky top-20 z-40 py-6 -mx-4 px-4 bg-white/80 backdrop-blur-xl border-y border-slate-100">
+                    <div className="flex items-center gap-3 overflow-x-auto pb-2 custom-scrollbar scroll-smooth">
                         <Link
                             href={`/stores${q ? `?q=${q}` : ''}`}
                             className={cn(
-                                "min-w-[48px] h-12 flex items-center justify-center rounded-xl text-xs font-black transition-all border uppercase px-4",
+                                "flex-shrink-0 min-w-[80px] h-12 flex items-center justify-center rounded-2xl text-[10px] font-black transition-all border uppercase px-5 tracking-widest",
                                 !selectedChar
-                                    ? "bg-primary-600 text-white border-primary-500 shadow-lg shadow-primary-600/20"
-                                    : "bg-white/5 text-secondary-400 border-white/5 hover:bg-white/10 hover:text-white"
+                                    ? "bg-slate-900 text-white border-slate-900 shadow-xl shadow-slate-900/20"
+                                    : "bg-white text-slate-500 border-slate-100 hover:border-accent-300 hover:text-accent-600 shadow-sm"
                             )}
                         >
                             ALL
@@ -86,10 +86,10 @@ export default async function StoresPage(props: { searchParams: Promise<{ char?:
                                 key={char}
                                 href={`/stores?char=${char}${q ? `&q=${q}` : ''}`}
                                 className={cn(
-                                    "w-12 h-12 flex items-center justify-center rounded-xl text-xs font-black transition-all border uppercase",
+                                    "flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-2xl text-[11px] font-black transition-all border uppercase shadow-sm",
                                     selectedChar === char
-                                        ? "bg-primary-600 text-white border-primary-500 shadow-lg shadow-primary-600/20"
-                                        : "bg-white/5 text-secondary-400 border-white/5 hover:bg-white/10 hover:text-white"
+                                        ? "bg-accent-500 text-white border-accent-500 shadow-xl shadow-accent-500/20"
+                                        : "bg-white text-slate-500 border-slate-100 hover:border-accent-300 hover:text-accent-600"
                                 )}
                             >
                                 {char}
@@ -98,31 +98,31 @@ export default async function StoresPage(props: { searchParams: Promise<{ char?:
                     </div>
                 </div>
 
-                {/* Stores Grid */}
-                <div className="space-y-20">
+                <div className="space-y-24">
                     {selectedChar ? (
                         <div className="animate-in fade-in duration-700">
-                            <h2 className="text-4xl font-black text-white mb-10 border-b border-white/5 pb-6">
-                                <span className="text-primary-500">#</span> {selectedChar}
-                            </h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                            <div className="flex items-center gap-6 mb-12">
+                                <span className="text-5xl font-black text-accent-500 italic">[{selectedChar}]</span>
+                                <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
+                            </div>
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8">
                                 {filteredStores.map((store: any) => (
                                     <Link
                                         href={`/store/${store.slug}`}
                                         key={store._id}
-                                        className="group glass-card p-6 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-2 hover:border-primary-500/30"
+                                        className="group relative bg-white border border-slate-200 p-8 rounded-[2rem] flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-2 hover:border-accent-200 hover:shadow-xl hover:shadow-slate-200/50"
                                     >
-                                        <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center overflow-hidden mb-4 p-2 grayscale group-hover:grayscale-0 transition-all duration-500 shadow-sm">
+                                        <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center overflow-hidden mb-5 p-3 group-hover:rotate-6 transition-all duration-300 shadow-sm border border-slate-100">
                                             {store.logoUrl ? (
                                                 <img src={store.logoUrl} alt={store.name} className="w-full h-full object-contain" />
                                             ) : (
-                                                <div className="text-2xl font-black text-secondary-900 uppercase">{store.name.charAt(0)}</div>
+                                                <div className="text-3xl font-black text-slate-200 uppercase">{store.name.charAt(0)}</div>
                                             )}
                                         </div>
-                                        <span className="text-[10px] font-black text-secondary-500 group-hover:text-primary-400 transition-colors text-center w-full uppercase tracking-widest truncate">{store.name}</span>
+                                        <span className="text-[10px] font-black text-slate-400 group-hover:text-accent-600 transition-colors text-center w-full uppercase tracking-[0.2em] truncate relative z-10">{store.name}</span>
                                     </Link>
                                 ))}
-                                {filteredStores.length === 0 && <p className="text-secondary-500 font-bold italic col-span-full py-10">No stores found under this section.</p>}
+                                {filteredStores.length === 0 && <p className="text-slate-400 font-bold italic col-span-full py-16 uppercase tracking-[0.3em] text-[10px] text-center">No merchants found in this register.</p>}
                             </div>
                         </div>
                     ) : (
@@ -131,24 +131,25 @@ export default async function StoresPage(props: { searchParams: Promise<{ char?:
                             if (charStores.length === 0) return null;
                             return (
                                 <div key={char} className="animate-in fade-in duration-700">
-                                    <h2 className="text-4xl font-black text-white mb-10 border-b border-white/5 pb-6">
-                                        <span className="text-primary-500">#</span> {char}
-                                    </h2>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                                    <div className="flex items-center gap-6 mb-10">
+                                        <span className="text-4xl font-black text-slate-200 tracking-tighter uppercase italic">{char}</span>
+                                        <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-100 to-transparent" />
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8">
                                         {charStores.map((store: any) => (
                                             <Link
                                                 href={`/store/${store.slug}`}
                                                 key={store._id}
-                                                className="group glass-card p-6 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-2 hover:border-primary-500/30"
+                                                className="group relative bg-white border border-slate-200 p-8 rounded-[2rem] flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-2 hover:border-accent-200 hover:shadow-xl hover:shadow-slate-200/50"
                                             >
-                                                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center overflow-hidden mb-4 p-2 grayscale group-hover:grayscale-0 transition-all duration-500 shadow-sm">
+                                                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center overflow-hidden mb-4 p-2.5 group-hover:rotate-6 transition-all duration-300 shadow-sm border border-slate-100">
                                                     {store.logoUrl ? (
                                                         <img src={store.logoUrl} alt={store.name} className="w-full h-full object-contain" />
                                                     ) : (
-                                                        <div className="text-2xl font-black text-secondary-900 uppercase">{store.name.charAt(0)}</div>
+                                                        <div className="text-2xl font-black text-slate-200 uppercase">{store.name.charAt(0)}</div>
                                                     )}
                                                 </div>
-                                                <span className="text-[10px] font-black text-secondary-500 group-hover:text-primary-400 transition-colors text-center w-full uppercase tracking-widest truncate">{store.name}</span>
+                                                <span className="text-[9px] font-black text-slate-400 group-hover:text-accent-600 transition-colors text-center w-full uppercase tracking-[0.2em] truncate relative z-10">{store.name}</span>
                                             </Link>
                                         ))}
                                     </div>
@@ -158,9 +159,9 @@ export default async function StoresPage(props: { searchParams: Promise<{ char?:
                     )}
 
                     {filteredStores.length === 0 && (
-                        <div className="text-center py-32 space-y-6">
-                            <p className="text-secondary-500 font-bold text-xl italic">No brands found matching "{q}".</p>
-                            <Link href="/stores" className="inline-flex items-center gap-2 bg-primary-600 text-white px-8 py-3 rounded-full font-black text-sm uppercase tracking-widest hover:bg-primary-500 transition-all">Clear Selection</Link>
+                        <div className="text-center py-40 space-y-8">
+                            <p className="text-slate-400 font-bold text-xl italic uppercase tracking-widest">No brands found matching "{q}".</p>
+                            <Link href="/stores" className="inline-flex items-center gap-4 bg-slate-900 text-white px-12 py-5 rounded-full font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-2xl shadow-slate-900/20">Clear Selection</Link>
                         </div>
                     )}
                 </div>

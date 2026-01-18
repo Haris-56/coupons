@@ -1,6 +1,8 @@
+
 'use client';
 
 import { useActionState, useState, useRef } from 'react';
+import { useFormStatus } from 'react-dom';
 import { updateCategory } from '@/actions/category';
 import { ArrowLeft, Save, Upload, AlertCircle, X, ImageIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -9,6 +11,26 @@ const initialState = {
     message: '',
     errors: {} as Record<string, string[]>,
 };
+
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <button
+            type="submit"
+            disabled={pending}
+            className="w-full bg-slate-900 hover:bg-black text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wider transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+            {pending ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+                <>
+                    <Save size={18} />
+                    Update Category
+                </>
+            )}
+        </button>
+    );
+}
 
 export default function EditForm({ category }: { category: any }) {
     // @ts-ignore
@@ -33,183 +55,159 @@ export default function EditForm({ category }: { category: any }) {
     };
 
     return (
-        <form action={formAction} className="pb-20">
+        <form action={formAction} className="pb-20 space-y-8">
             <input type="hidden" name="id" value={category._id} />
 
-            <div className="flex items-center gap-4 mb-6">
-                <Link href="/admin/categories" className="bg-white border border-secondary-200 p-2 rounded-full hover:bg-secondary-50 text-secondary-500 transition-all shadow-sm">
-                    <ArrowLeft size={20} />
+            <div className="flex items-center gap-4">
+                <Link href="/admin/categories" className="bg-white border border-slate-200 p-3 rounded-xl hover:bg-slate-50 text-slate-500 transition-all shadow-sm">
+                    <ArrowLeft size={18} />
                 </Link>
-                <div>
-                    <h1 className="text-2xl font-bold text-secondary-900">Edit Category</h1>
-                    <div className="h-1 w-10 bg-primary-600 rounded-full mt-1"></div>
+                <div className="space-y-1">
+                    <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+                        Edit Category <span className="text-accent-500 ml-2">#{category._id.slice(-6)}</span>
+                    </h1>
+                    <div className="h-1 w-12 bg-accent-500 rounded-full"></div>
                 </div>
             </div>
 
             {state?.message && (
-                <div className="p-4 rounded-lg mb-6 flex items-center gap-2 border bg-red-50 text-red-600 border-red-100">
-                    <AlertCircle size={20} />
-                    {state.message}
+                <div className="bg-rose-50 text-rose-600 p-4 rounded-xl flex items-center gap-3 border border-rose-100 animate-in fade-in slide-in-from-top-2">
+                    <AlertCircle size={18} />
+                    <span className="text-sm font-medium">{state.message}</span>
                 </div>
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Main Form Area */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white border border-secondary-200 rounded-xl shadow-sm p-6 space-y-6">
-                        {/* Name */}
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-secondary-500 uppercase">Category Name <span className="text-red-500">*</span></label>
+                    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-6">
+                        {/* Title Section */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Category Name <span className="text-rose-500">*</span></label>
                             <input
                                 name="name"
                                 type="text"
                                 required
                                 defaultValue={category.name}
-                                className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
+                                placeholder="e.g. Electronics & Gadgets"
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 focus:bg-white transition-all shadow-sm"
                             />
-                            {state?.errors?.name && <p className="text-red-500 text-xs mt-1">{state.errors.name[0]}</p>}
+                            {state?.errors?.name && <p className="text-rose-500 text-xs mt-1">{state.errors.name[0]}</p>}
                         </div>
 
-                        {/* Slug */}
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-secondary-500 uppercase">Slug</label>
-                            <input
-                                name="slug"
-                                type="text"
-                                defaultValue={category.slug}
-                                placeholder="category-slug"
-                                className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all font-mono bg-white"
-                            />
-                            {state?.errors?.slug && <p className="text-red-500 text-xs mt-1">{state.errors.slug[0]}</p>}
+                        {/* Slug Area */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">URL Slug</label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">/</span>
+                                <input
+                                    name="slug"
+                                    type="text"
+                                    defaultValue={category.slug}
+                                    placeholder="category-slug"
+                                    className="w-full pl-8 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 focus:bg-white transition-all lowercase"
+                                />
+                            </div>
                         </div>
 
                         {/* Description */}
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-secondary-500 uppercase">Description</label>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Description</label>
                             <textarea
                                 name="description"
                                 rows={4}
                                 defaultValue={category.description}
-                                className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
+                                placeholder="Enter category details..."
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 focus:bg-white transition-all shadow-sm"
                             />
                         </div>
 
-                        {/* Icon */}
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-secondary-500 uppercase">Icon (Lucide name or Emoji)</label>
+                        {/* Visual Icon */}
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Icon Class (FontAwesome)</label>
                             <input
                                 name="icon"
                                 type="text"
                                 defaultValue={category.icon}
-                                placeholder="ShoppingBag, Plane, etc."
-                                className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
+                                placeholder="e.g. fa-solid fa-laptop"
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 focus:bg-white transition-all"
                             />
                         </div>
 
-                        {/* Settings Dividers */}
-                        <div className="relative pt-4">
-                            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                <div className="w-full border-t border-secondary-200"></div>
-                            </div>
-                            <div className="relative flex justify-start">
-                                <span className="pr-2 bg-white text-xs font-bold text-secondary-400 uppercase tracking-widest">Visibility Settings</span>
-                            </div>
-                        </div>
-
+                        {/* Config Toggles */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Show in Menu</label>
-                                <select
-                                    name="isShowInMenu"
-                                    defaultValue={category.isShowInMenu ? 'yes' : 'no'}
-                                    className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm"
-                                >
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Show in Menu</label>
+                                <select name="isShowInMenu" defaultValue={category.isShowInMenu ? 'yes' : 'no'} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all cursor-pointer">
                                     <option value="no">No</option>
                                     <option value="yes">Yes</option>
                                 </select>
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">Featured Category</label>
-                                <select
-                                    name="isFeatured"
-                                    defaultValue={category.isFeatured ? 'yes' : 'no'}
-                                    className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm"
-                                >
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Featured Category</label>
+                                <select name="isFeatured" defaultValue={category.isFeatured ? 'yes' : 'no'} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all cursor-pointer">
                                     <option value="no">No</option>
                                     <option value="yes">Yes</option>
                                 </select>
                             </div>
                         </div>
 
-                        {/* SEO Section */}
-                        <div className="relative pt-4">
-                            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                <div className="w-full border-t border-secondary-200"></div>
-                            </div>
-                            <div className="relative flex justify-start">
-                                <span className="pr-2 bg-white text-xs font-bold text-secondary-400 uppercase tracking-widest">SEO Optimization</span>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">SEO Title</label>
-                                <input
-                                    name="seoTitle"
-                                    type="text"
-                                    defaultValue={category.seoTitle}
-                                    className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
-                                />
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold text-secondary-500 uppercase">SEO Description</label>
-                                <textarea
-                                    name="seoDescription"
-                                    rows={3}
-                                    defaultValue={category.seoDescription}
-                                    className="w-full px-4 py-2.5 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white"
-                                />
+                        {/* SEO Config */}
+                        <div className="pt-4 space-y-6 border-t border-slate-100">
+                            <h3 className="text-sm font-bold text-slate-800">SEO Configuration</h3>
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">SEO Title</label>
+                                    <input name="seoTitle" type="text" defaultValue={category.seoTitle} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all shadow-sm" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">SEO Description</label>
+                                    <textarea name="seoDescription" rows={3} defaultValue={category.seoDescription} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all shadow-sm" />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                {/* Sidebar Area */}
                 <div className="space-y-6">
-                    <div className="bg-white border border-secondary-200 rounded-xl shadow-sm p-5 space-y-4">
-                        <h3 className="text-sm font-bold text-secondary-700">Display Status</h3>
-                        <select
-                            name="isActive"
-                            defaultValue={category.isActive ? 'enabled' : 'disabled'}
-                            className="w-full px-4 py-2.5 bg-white border border-secondary-200 rounded-lg text-sm text-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all shadow-sm"
-                        >
-                            <option value="enabled">Enabled (Public)</option>
-                            <option value="disabled">Disabled (Private)</option>
+                    {/* Public Status */}
+                    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-6">
+                        <h3 className="text-sm font-bold text-slate-800">Status</h3>
+                        <select name="isActive" defaultValue={category.isActive ? 'enabled' : 'disabled'} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-accent-500 transition-all cursor-pointer">
+                            <option value="enabled">Active</option>
+                            <option value="disabled">Disabled</option>
                         </select>
                     </div>
 
-                    <div className="bg-white border border-secondary-200 rounded-xl shadow-sm p-5 space-y-4">
-                        <h3 className="text-sm font-bold text-secondary-700">Category Image</h3>
+                    {/* Media Upload */}
+                    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-6">
+                        <div className="space-y-1">
+                            <h3 className="text-sm font-bold text-slate-800">Category Image</h3>
+                            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Square recommended</p>
+                        </div>
+
                         <div
-                            className="bg-secondary-50 border-2 border-dashed border-secondary-200 rounded-xl p-8 flex flex-col items-center justify-center text-center relative group cursor-pointer hover:border-primary-400 hover:bg-primary-50/30 transition-all"
+                            className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center text-center relative group cursor-pointer hover:border-accent-500 hover:bg-white transition-all"
                             onClick={() => fileInputRef.current?.click()}
                         >
                             {preview ? (
-                                <div className="space-y-2">
-                                    <img src={preview} alt="Preview" className="max-h-40 rounded-lg shadow-md mx-auto" />
+                                <div className="space-y-4">
+                                    <img src={preview} alt="Preview" className="max-h-48 rounded-xl shadow-lg mx-auto" />
                                     <button
                                         type="button"
                                         onClick={(e) => { e.stopPropagation(); removePreview(); }}
-                                        className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors shadow-lg active:scale-90"
+                                        className="absolute -top-3 -right-3 bg-rose-500 text-white p-2 rounded-full hover:bg-rose-600 transition-colors shadow-lg active:scale-90"
                                     >
                                         <X size={16} />
                                     </button>
                                 </div>
                             ) : (
                                 <>
-                                    <div className="bg-white p-4 rounded-full shadow-sm mb-3 group-hover:scale-110 transition-transform">
-                                        <ImageIcon size={24} className="text-secondary-400 group-hover:text-primary-500" />
+                                    <div className="p-4 rounded-xl bg-white shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                                        <ImageIcon size={24} className="text-slate-300 group-hover:text-accent-500 transition-colors" />
                                     </div>
-                                    <span className="text-sm font-bold text-secondary-600 mb-1">Choose Image</span>
-                                    <span className="text-xs text-secondary-400">PNG, JPG or WebP</span>
+                                    <span className="text-xs font-bold text-slate-600">Click to upload</span>
                                 </>
                             )}
                             <input
@@ -223,10 +221,7 @@ export default function EditForm({ category }: { category: any }) {
                         </div>
                     </div>
 
-                    <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-lg font-bold text-sm uppercase tracking-wider transition-all shadow-lg shadow-primary-200 active:scale-95 flex items-center justify-center gap-2">
-                        <Save size={18} />
-                        Update Category
-                    </button>
+                    <SubmitButton />
                 </div>
             </div>
         </form>

@@ -9,11 +9,11 @@ export async function Header() {
     const session = await verifySession();
 
     return (
-        <header className="sticky top-0 z-50 w-full glass-header">
+        <header className="fixed top-0 left-0 right-0 z-50 glass-header">
             <div className="container-width h-20 flex items-center justify-between gap-8">
                 {/* Logo */}
                 <Link href="/" className="flex items-center group transition-transform hover:scale-105 active:scale-95">
-                    <img src="/discountcouponn.png" alt="DiscountCouponn" className="h-10 md:h-12 w-auto brightness-0 invert" />
+                    <img src="/discountcouponn.png" alt="DiscountCouponn" className="h-10 md:h-12 w-auto" />
                 </Link>
 
                 {/* Search Bar - Hidden on mobile, visible on md+ */}
@@ -24,31 +24,31 @@ export async function Header() {
                 {/* Navigation */}
                 <nav className="flex items-center gap-2">
                     <div className="hidden lg:flex items-center gap-1 mr-4">
-                        <Link href="/" className="px-4 py-2 text-secondary-300 hover:text-white font-medium text-sm transition-all rounded-full hover:bg-white/5">
+                        <Link href="/" className="px-5 py-2 text-slate-500 hover:text-accent-600 font-bold text-[10px] uppercase tracking-[0.2em] transition-all rounded-full hover:bg-slate-50">
                             Home
                         </Link>
-                        <Link href="/categories" className="px-4 py-2 text-secondary-300 hover:text-white font-medium text-sm transition-all rounded-full hover:bg-white/5">
+                        <Link href="/categories" className="px-5 py-2 text-slate-500 hover:text-accent-600 font-bold text-[10px] uppercase tracking-[0.2em] transition-all rounded-full hover:bg-slate-50">
                             Categories
                         </Link>
-                        <Link href="/stores" className="px-4 py-2 text-secondary-300 hover:text-white font-medium text-sm transition-all rounded-full hover:bg-white/5">
+                        <Link href="/stores" className="px-5 py-2 text-slate-500 hover:text-accent-600 font-bold text-[10px] uppercase tracking-[0.2em] transition-all rounded-full hover:bg-slate-50">
                             Stores
                         </Link>
                     </div>
 
                     {session.isAuth ? (
-                        <Link href="/admin" className="hidden sm:flex items-center gap-3 bg-secondary-900/50 hover:bg-secondary-800 border border-white/5 hover:border-white/10 px-4 py-2 rounded-full transition-all group">
-                            <div className="w-8 h-8 rounded-full bg-primary-600/20 border border-primary-500/30 flex items-center justify-center text-primary-400 group-hover:bg-primary-600/30">
-                                <User size={16} />
+                        <Link href="/admin" className="hidden sm:flex items-center gap-3 bg-white border border-slate-200 hover:border-accent-300 px-5 py-2 rounded-full transition-all group shadow-sm">
+                            <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white shadow-lg group-hover:bg-accent-600 transition-colors">
+                                <User size={14} />
                             </div>
-                            <span className="hidden lg:block text-sm font-semibold text-secondary-200">Dashboard</span>
+                            <span className="hidden lg:block text-[10px] font-black text-slate-700 uppercase tracking-widest">Dashboard</span>
                         </Link>
                     ) : (
                         <div className="hidden sm:flex items-center gap-4">
-                            <Link href="/login" className="text-secondary-300 hover:text-white font-medium text-sm px-4 py-2 rounded-full hover:bg-white/5 transition-all">
+                            <Link href="/login" className="text-slate-500 hover:text-accent-600 font-bold text-[10px] uppercase tracking-widest px-4 transition-all">
                                 Log in
                             </Link>
-                            <Link href="/signup" className="bg-primary-600 hover:bg-primary-500 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-primary-600/20 hover:shadow-primary-600/40 active:scale-95">
-                                Sign up
+                            <Link href="/signup" className="bg-slate-900 hover:bg-black text-white px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-slate-900/10 active:scale-95">
+                                Join Now
                             </Link>
                         </div>
                     )}
