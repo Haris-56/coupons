@@ -36,32 +36,35 @@ export default async function StoresPage(props: { searchParams: Promise<{ char?:
     });
 
     return (
-        <div className="bg-slate-50 min-h-screen pb-20">
+        <div className="min-h-screen pb-20">
             {/* Header */}
-            <div className="bg-primary-600 py-12">
-                <div className="container mx-auto px-4">
-                    <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Stores</h1>
-                    <div className="h-1 w-16 bg-white rounded-full"></div>
+            <section className="pt-32 pb-16">
+                <div className="container-width">
+                    <div className="space-y-4">
+                        <h2 className="text-secondary-500 font-bold uppercase tracking-[0.2em] text-sm">Brand Directory</h2>
+                        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight leading-none">STORES</h1>
+                        <p className="text-secondary-400 max-w-2xl font-medium">Browse our full collection of partner retailers and exclusive boutiques.</p>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <div className="container mx-auto px-4 -mt-8 space-y-8">
+            <div className="container-width space-y-12">
                 {/* Search & Filter */}
-                <div className="bg-white rounded-xl shadow-lg p-6">
+                <div className="glass-card rounded-3xl p-8 md:p-10">
                     {/* Search Bar */}
-                    <div className="max-w-md mx-auto relative mb-8">
+                    <div className="max-w-xl mx-auto relative mb-12">
                         <form action="/stores" method="GET">
                             {selectedChar && <input type="hidden" name="char" value={selectedChar} />}
-                            <input
-                                name="q"
-                                type="text"
-                                defaultValue={q}
-                                placeholder="Search your favorite store..."
-                                className="w-full pl-12 pr-4 py-3 border border-secondary-200 rounded-full focus:outline-none focus:border-primary-500 transition-all font-medium text-secondary-800"
-                            />
-                            <button type="submit" className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary-400">
-                                <Search size={20} />
-                            </button>
+                            <div className="relative group">
+                                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-secondary-500 group-focus-within:text-primary-400 transition-colors" size={20} />
+                                <input
+                                    name="q"
+                                    type="text"
+                                    defaultValue={q}
+                                    placeholder="Search your favorite store..."
+                                    className="w-full pl-14 pr-6 py-4 bg-secondary-900/50 border border-white/5 rounded-2xl focus:outline-none focus:border-primary-500/50 focus:bg-secondary-900 transition-all font-bold text-white placeholder:text-secondary-600"
+                                />
+                            </div>
                         </form>
                     </div>
 
@@ -70,10 +73,10 @@ export default async function StoresPage(props: { searchParams: Promise<{ char?:
                         <Link
                             href={`/stores${q ? `?q=${q}` : ''}`}
                             className={cn(
-                                "w-10 h-10 flex items-center justify-center rounded-full text-xs font-bold transition-all",
+                                "min-w-[48px] h-12 flex items-center justify-center rounded-xl text-xs font-black transition-all border uppercase px-4",
                                 !selectedChar
-                                    ? "bg-primary-600 text-white shadow-md"
-                                    : "bg-secondary-100 text-secondary-600 hover:bg-white hover:shadow-md hover:text-primary-600"
+                                    ? "bg-primary-600 text-white border-primary-500 shadow-lg shadow-primary-600/20"
+                                    : "bg-white/5 text-secondary-400 border-white/5 hover:bg-white/10 hover:text-white"
                             )}
                         >
                             ALL
@@ -83,10 +86,10 @@ export default async function StoresPage(props: { searchParams: Promise<{ char?:
                                 key={char}
                                 href={`/stores?char=${char}${q ? `&q=${q}` : ''}`}
                                 className={cn(
-                                    "w-10 h-10 flex items-center justify-center rounded-full text-xs font-bold transition-all",
+                                    "w-12 h-12 flex items-center justify-center rounded-xl text-xs font-black transition-all border uppercase",
                                     selectedChar === char
-                                        ? "bg-primary-600 text-white shadow-md"
-                                        : "bg-secondary-100 text-secondary-600 hover:bg-white hover:shadow-md hover:text-primary-600"
+                                        ? "bg-primary-600 text-white border-primary-500 shadow-lg shadow-primary-600/20"
+                                        : "bg-white/5 text-secondary-400 border-white/5 hover:bg-white/10 hover:text-white"
                                 )}
                             >
                                 {char}
@@ -96,71 +99,70 @@ export default async function StoresPage(props: { searchParams: Promise<{ char?:
                 </div>
 
                 {/* Stores Grid */}
-                <div className="bg-white rounded-xl shadow-lg p-8">
-                    <div className="space-y-12">
-                        {/* Group by Letter just for visuals, or just list them if filtered */}
-                        {selectedChar ? (
-                            <div>
-                                <h2 className="text-2xl font-bold text-secondary-800 mb-6 border-b border-secondary-100 pb-2">{selectedChar}</h2>
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-                                    {filteredStores.map((store: any) => (
-                                        <Link
-                                            href={`/store/${store.slug}`}
-                                            key={store._id}
-                                            className="flex items-center gap-4 group p-3 rounded-xl hover:bg-secondary-50 transition-all border border-transparent hover:border-secondary-100"
-                                        >
-                                            <div className="w-12 h-12 rounded-lg bg-white shadow-sm border border-secondary-100 flex items-center justify-center p-1 group-hover:scale-105 transition-transform">
-                                                {store.logoUrl ? (
-                                                    <img src={store.logoUrl} alt={store.name} className="w-full h-full object-contain" />
-                                                ) : (
-                                                    <div className="text-lg font-bold text-secondary-300">{store.name.charAt(0)}</div>
-                                                )}
-                                            </div>
-                                            <span className="text-sm font-bold text-secondary-700 group-hover:text-primary-600 transition-colors">{store.name}</span>
-                                        </Link>
-                                    ))}
-                                    {filteredStores.length === 0 && <p className="text-secondary-400 italic">No stores found.</p>}
-                                </div>
-                            </div>
-                        ) : (
-                            // Show all filtered stores grouped by letter
-                            <>
-                                {alphabet.map(char => {
-                                    const charStores = filteredStores.filter((s: any) => s.name.charAt(0).toUpperCase() === char);
-                                    if (charStores.length === 0) return null;
-                                    return (
-                                        <div key={char}>
-                                            <h2 className="text-2xl font-bold text-secondary-800 mb-6 border-b border-secondary-100 pb-2">{char}</h2>
-                                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-                                                {charStores.map((store: any) => (
-                                                    <Link
-                                                        href={`/store/${store.slug}`}
-                                                        key={store._id}
-                                                        className="flex items-center gap-4 group p-3 rounded-xl hover:bg-secondary-50 transition-all border border-transparent hover:border-secondary-100"
-                                                    >
-                                                        <div className="w-12 h-12 rounded-lg bg-white shadow-sm border border-secondary-100 flex items-center justify-center p-1 group-hover:scale-105 transition-transform">
-                                                            {store.logoUrl ? (
-                                                                <img src={store.logoUrl} alt={store.name} className="w-full h-full object-contain" />
-                                                            ) : (
-                                                                <div className="text-lg font-bold text-secondary-300">{store.name.charAt(0)}</div>
-                                                            )}
-                                                        </div>
-                                                        <span className="text-sm font-bold text-secondary-700 group-hover:text-primary-600 transition-colors">{store.name}</span>
-                                                    </Link>
-                                                ))}
-                                            </div>
+                <div className="space-y-20">
+                    {selectedChar ? (
+                        <div className="animate-in fade-in duration-700">
+                            <h2 className="text-4xl font-black text-white mb-10 border-b border-white/5 pb-6">
+                                <span className="text-primary-500">#</span> {selectedChar}
+                            </h2>
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                                {filteredStores.map((store: any) => (
+                                    <Link
+                                        href={`/store/${store.slug}`}
+                                        key={store._id}
+                                        className="group glass-card p-6 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-2 hover:border-primary-500/30"
+                                    >
+                                        <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center overflow-hidden mb-4 p-2 grayscale group-hover:grayscale-0 transition-all duration-500 shadow-sm">
+                                            {store.logoUrl ? (
+                                                <img src={store.logoUrl} alt={store.name} className="w-full h-full object-contain" />
+                                            ) : (
+                                                <div className="text-2xl font-black text-secondary-900 uppercase">{store.name.charAt(0)}</div>
+                                            )}
                                         </div>
-                                    );
-                                })}
-                                {filteredStores.length === 0 && (
-                                    <div className="text-center py-20">
-                                        <p className="text-secondary-400 italic text-lg text-center w-full">No stores found matching "{q}".</p>
-                                        <Link href="/stores" className="text-primary-600 font-bold hover:underline mt-4 inline-block">View all stores</Link>
+                                        <span className="text-[10px] font-black text-secondary-500 group-hover:text-primary-400 transition-colors text-center w-full uppercase tracking-widest truncate">{store.name}</span>
+                                    </Link>
+                                ))}
+                                {filteredStores.length === 0 && <p className="text-secondary-500 font-bold italic col-span-full py-10">No stores found under this section.</p>}
+                            </div>
+                        </div>
+                    ) : (
+                        alphabet.map(char => {
+                            const charStores = filteredStores.filter((s: any) => s.name.charAt(0).toUpperCase() === char);
+                            if (charStores.length === 0) return null;
+                            return (
+                                <div key={char} className="animate-in fade-in duration-700">
+                                    <h2 className="text-4xl font-black text-white mb-10 border-b border-white/5 pb-6">
+                                        <span className="text-primary-500">#</span> {char}
+                                    </h2>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                                        {charStores.map((store: any) => (
+                                            <Link
+                                                href={`/store/${store.slug}`}
+                                                key={store._id}
+                                                className="group glass-card p-6 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-2 hover:border-primary-500/30"
+                                            >
+                                                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center overflow-hidden mb-4 p-2 grayscale group-hover:grayscale-0 transition-all duration-500 shadow-sm">
+                                                    {store.logoUrl ? (
+                                                        <img src={store.logoUrl} alt={store.name} className="w-full h-full object-contain" />
+                                                    ) : (
+                                                        <div className="text-2xl font-black text-secondary-900 uppercase">{store.name.charAt(0)}</div>
+                                                    )}
+                                                </div>
+                                                <span className="text-[10px] font-black text-secondary-500 group-hover:text-primary-400 transition-colors text-center w-full uppercase tracking-widest truncate">{store.name}</span>
+                                            </Link>
+                                        ))}
                                     </div>
-                                )}
-                            </>
-                        )}
-                    </div>
+                                </div>
+                            );
+                        })
+                    )}
+
+                    {filteredStores.length === 0 && (
+                        <div className="text-center py-32 space-y-6">
+                            <p className="text-secondary-500 font-bold text-xl italic">No brands found matching "{q}".</p>
+                            <Link href="/stores" className="inline-flex items-center gap-2 bg-primary-600 text-white px-8 py-3 rounded-full font-black text-sm uppercase tracking-widest hover:bg-primary-500 transition-all">Clear Selection</Link>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -5,7 +5,10 @@ import {
     Ticket,
     TrendingUp,
     Calendar,
-    ExternalLink
+    ExternalLink,
+    ChevronRight,
+    Search,
+    Settings
 } from 'lucide-react';
 import { connectToDatabase } from '@/lib/db';
 import User from '@/models/User';
@@ -41,37 +44,41 @@ export default async function AdminDashboard() {
 
     const cards = [
         {
-            title: 'Total Users',
+            title: 'TOTAL USERS',
             value: stats.userCount,
             icon: Users,
-            color: 'bg-secondary-500',
+            color: 'text-blue-500',
+            bg: 'bg-blue-500/10'
         },
         {
-            title: 'Active Stores',
+            title: 'ACTIVE STORES',
             value: stats.storeCount,
             icon: Store,
-            color: 'bg-primary-500',
+            color: 'text-primary-500',
+            bg: 'bg-primary-500/10'
         },
         {
-            title: 'Total Coupons',
+            title: 'ALL COUPONS',
             value: stats.couponCount,
             icon: Ticket,
-            color: 'bg-secondary-600',
+            color: 'text-purple-500',
+            bg: 'bg-purple-500/10'
         },
         {
-            title: 'Active Coupons',
+            title: 'LIVE DEALS',
             value: stats.activeCoupons,
             icon: TrendingUp,
-            color: 'bg-primary-600',
+            color: 'text-emerald-500',
+            bg: 'bg-emerald-500/10'
         },
     ];
 
     return (
-        <div className="space-y-8">
-            <div>
-                <h1 className="text-3xl font-bold text-secondary-900">Dashboard Overview</h1>
-                <p className="text-secondary-500 mt-1">Welcome back, Admin</p>
-            </div>
+        <div className="space-y-12 pb-20">
+            <header className="space-y-2">
+                <h2 className="text-secondary-500 font-black text-xs uppercase tracking-[0.3em]">System Intelligence</h2>
+                <h1 className="text-4xl font-black text-white tracking-tighter">DASHBOARD <span className="text-primary-500 italic">OVERVIEW</span></h1>
+            </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {cards.map((card, index) => {
@@ -79,68 +86,82 @@ export default async function AdminDashboard() {
                     return (
                         <div
                             key={index}
-                            className="bg-white p-6 rounded-xl shadow-sm border border-secondary-200 flex items-center gap-4 hover:shadow-md transition-all hover:border-primary-200 group"
+                            className="glass-card p-8 rounded-3xl group relative overflow-hidden transition-all duration-500 hover:border-primary-500/30"
                         >
-                            <div className={`${card.color} p-4 rounded-xl text-white shadow-lg shadow-secondary-100 group-hover:scale-110 transition-transform`}>
-                                <Icon size={24} />
+                            <div className={`absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity`}>
+                                <Icon size={64} />
                             </div>
-                            <div>
-                                <p className="text-secondary-500 text-sm font-medium">{card.title}</p>
-                                <h3 className="text-2xl font-bold text-secondary-800">{card.value}</h3>
+                            <div className="space-y-6 relative z-10">
+                                <div className={card.bg + " w-12 h-12 rounded-2xl flex items-center justify-center " + card.color + " border border-white/5 shadow-xl transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6"}>
+                                    <Icon size={20} />
+                                </div>
+                                <div>
+                                    <p className="text-secondary-500 text-[10px] font-black tracking-[0.2em] uppercase mb-1">{card.title}</p>
+                                    <h3 className="text-3xl font-black text-white tabular-nums">{card.value}</h3>
+                                </div>
                             </div>
                         </div>
                     );
                 })}
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-secondary-200 overflow-hidden">
-                <div className="p-6 border-b border-secondary-100 flex items-center justify-between">
-                    <h2 className="text-lg font-bold text-secondary-800 flex items-center gap-2">
-                        <Ticket className="text-primary-500" size={20} />
-                        Recently Added Coupons
-                    </h2>
-                    <Link href="/admin/coupons" className="text-sm text-primary-600 hover:text-primary-700 font-medium hover:underline">
-                        View All
+            <div className="glass-card rounded-[2.5rem] overflow-hidden border-white/5">
+                <div className="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-primary-600/10 flex items-center justify-center text-primary-500 border border-primary-500/20">
+                            <Ticket size={20} />
+                        </div>
+                        <h2 className="text-xl font-black text-white tracking-tight uppercase">Recent <span className="text-primary-500">Activity</span></h2>
+                    </div>
+                    <Link href="/admin/coupons" className="text-xs font-black text-secondary-500 hover:text-white uppercase tracking-widest transition-colors flex items-center gap-2 group">
+                        View Database <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
 
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left">
-                        <thead className="bg-secondary-50 text-secondary-500 text-xs uppercase font-semibold">
+                        <thead className="bg-white/20 text-secondary-500 text-[10px] uppercase font-black tracking-widest">
                             <tr>
-                                <th className="px-6 py-4">Title</th>
-                                <th className="px-6 py-4">Store</th>
-                                <th className="px-6 py-4">Type</th>
-                                <th className="px-6 py-4">Date Added</th>
-                                <th className="px-6 py-4 text-right">Action</th>
+                                <th className="px-8 py-5">Product/Offer</th>
+                                <th className="px-8 py-5">Retailer</th>
+                                <th className="px-8 py-5">Status</th>
+                                <th className="px-8 py-5">Timestamp</th>
+                                <th className="px-8 py-5 text-right flex justify-end items-center gap-2"><Settings className="text-secondary-600" size={14} /></th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-secondary-100">
+                        <tbody className="divide-y divide-white/5">
                             {stats.recentCoupons.map((coupon: any) => (
-                                <tr key={coupon._id} className="hover:bg-secondary-50/50 transition-colors">
-                                    <td className="px-6 py-4">
-                                        <div className="font-medium text-secondary-900 line-clamp-1 max-w-xs">{coupon.title}</div>
-                                        <div className="text-xs text-secondary-400 font-mono mt-0.5">{coupon.code || 'No Code'}</div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            {coupon.store?.logoUrl && (
-                                                <img src={coupon.store.logoUrl} alt={coupon.store.name} className="w-6 h-6 object-contain rounded-full border border-secondary-200" />
-                                            )}
-                                            <span className="text-sm text-secondary-700 font-medium">{coupon.store?.name}</span>
+                                <tr key={coupon._id} className="hover:bg-white/[0.03] transition-colors group">
+                                    <td className="px-8 py-6">
+                                        <div className="font-bold text-white group-hover:text-primary-400 transition-colors line-clamp-1 max-w-sm">{coupon.title}</div>
+                                        <div className="text-[10px] text-secondary-600 font-black mt-1.5 uppercase hover:text-secondary-400 transition-colors cursor-pointer flex items-center gap-1.5">
+                                            <span className="w-2 h-2 rounded-full border border-secondary-800" />
+                                            {coupon.code || 'Auto-Applied'}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${coupon.couponType === 'Code'
-                                                ? 'bg-secondary-100 text-secondary-700 border-secondary-200'
-                                                : 'bg-green-50 text-green-700 border-green-100'
+                                    <td className="px-8 py-6">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-lg bg-white p-1 border border-white/10 group-hover:scale-110 transition-transform">
+                                                {coupon.store?.logoUrl ? (
+                                                    <img src={coupon.store.logoUrl} alt={coupon.store.name} className="w-full h-full object-contain" />
+                                                ) : (
+                                                    <div className="w-full h-full bg-secondary-900 flex items-center justify-center text-[10px] font-black text-white uppercase">{coupon.store?.name?.charAt(0)}</div>
+                                                )}
+                                            </div>
+                                            <span className="text-sm text-secondary-400 font-bold group-hover:text-white transition-colors uppercase tracking-tight">{coupon.store?.name}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-6">
+                                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${coupon.couponType === 'Code'
+                                            ? 'bg-primary-600/10 text-primary-400 border-primary-500/20'
+                                            : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                                             }`}>
                                             {coupon.couponType}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-secondary-500">
-                                        <div className="flex items-center gap-1.5">
-                                            <Calendar size={14} className="text-secondary-400" />
+                                    <td className="px-8 py-6">
+                                        <div className="flex items-center gap-2 text-secondary-500 text-xs font-bold tabular-nums">
+                                            <Calendar size={14} className="text-secondary-700" />
                                             {new Date(coupon.createdAt).toLocaleString('en-US', {
                                                 month: 'short',
                                                 day: 'numeric',
@@ -149,20 +170,20 @@ export default async function AdminDashboard() {
                                             })}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-8 py-6 text-right">
                                         <Link
                                             href={`/admin/coupons/edit/${coupon._id}`}
-                                            className="text-primary-600 hover:text-primary-700 font-medium text-sm hover:underline"
+                                            className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/5 border border-white/5 text-secondary-500 hover:text-white hover:bg-primary-600 transition-all shadow-xl"
                                         >
-                                            Edit
+                                            <ExternalLink size={14} />
                                         </Link>
                                     </td>
                                 </tr>
                             ))}
                             {stats.recentCoupons.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-secondary-500">
-                                        No coupons added yet.
+                                    <td colSpan={5} className="px-8 py-20 text-center text-secondary-600 font-bold italic">
+                                        System database is currently empty.
                                     </td>
                                 </tr>
                             )}

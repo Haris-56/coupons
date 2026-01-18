@@ -61,7 +61,7 @@ export function CouponCard({ coupon, layout = 'vertical' }: CouponCardProps) {
                     <div className="bg-secondary-800/50 p-6 flex flex-col items-center text-center border-b border-secondary-800 relative">
                         <button
                             onClick={closeModal}
-                            className="absolute right-4 top-4 text-secondary-400 hover:text-secondary-200 p-1 rounded-full hover:bg-secondary-800 transition-all"
+                            className="absolute right-4 top-4 text-secondary-400 hover:text-white p-1.5 rounded-full hover:bg-secondary-800/50 transition-all"
                         >
                             <X size={20} />
                         </button>
@@ -73,8 +73,8 @@ export function CouponCard({ coupon, layout = 'vertical' }: CouponCardProps) {
                                 <span className="font-bold text-secondary-900 text-xl">{coupon.store?.name?.substring(0, 1)}</span>
                             )}
                         </div>
-                        <h3 className="text-lg font-bold text-secondary-100 break-words w-full px-4">{coupon.title}</h3>
-                        <p className="text-secondary-400 text-sm mt-1">at {coupon.store?.name}</p>
+                        <h3 className="text-xl font-bold text-white break-words w-full px-4">{coupon.title}</h3>
+                        <p className="text-secondary-400 text-sm mt-1">at <span className="text-primary-400">{coupon.store?.name}</span></p>
                     </div>
 
                     {/* Body */}
@@ -158,7 +158,7 @@ export function CouponCard({ coupon, layout = 'vertical' }: CouponCardProps) {
         return (
             <>
                 <Modal />
-                <div className="glass hover:bg-secondary-800/80 rounded-xl overflow-hidden hover:shadow-xl transition-all group flex flex-col sm:flex-row items-center p-4 gap-4 relative border border-secondary-800">
+                <div className="glass-card hover:border-primary-500/30 hover:shadow-2xl hover:shadow-primary-900/10 rounded-2xl overflow-hidden transition-all duration-300 group flex flex-col sm:flex-row items-center p-5 gap-6 relative">
                     {/* Logo Section */}
                     <div className="w-full sm:w-32 h-24 sm:h-24 flex-shrink-0 bg-white rounded-lg flex items-center justify-center p-2 border border-secondary-700">
                         {coupon.imageUrl ? (
@@ -197,15 +197,15 @@ export function CouponCard({ coupon, layout = 'vertical' }: CouponCardProps) {
                         {coupon.couponType === 'Code' ? (
                             <button
                                 onClick={handleAction}
-                                className="w-full sm:w-auto relative group overflow-hidden bg-transparent border-2 border-dashed border-primary-500 text-primary-400 font-bold px-6 py-2.5 rounded-lg transition-all hover:bg-primary-500/10 flex items-center justify-center gap-2"
+                                className="w-full sm:w-auto relative group overflow-hidden bg-secondary-900/50 border border-primary-500/50 hover:border-primary-400 text-primary-300 hover:text-white font-bold px-6 py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary-900/10"
                             >
-                                <Scissors size={18} className="rotate-[-45deg]" />
+                                <Scissors size={18} className="rotate-[-45deg] group-hover:rotate-0 transition-transform duration-300" />
                                 <span className="relative z-10">Show Code</span>
                             </button>
                         ) : (
                             <button
                                 onClick={handleAction}
-                                className="w-full sm:w-auto bg-primary-600 hover:bg-primary-500 text-white text-sm font-bold px-6 py-3 rounded-lg transition-all shadow-md shadow-primary-900/20 active:scale-95"
+                                className="w-full sm:w-auto bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white text-sm font-bold px-8 py-3 rounded-xl transition-all shadow-lg shadow-primary-600/20 hover:shadow-primary-600/40 active:scale-95 transform hover:-translate-y-0.5"
                             >
                                 Get Deal
                             </button>
@@ -220,7 +220,7 @@ export function CouponCard({ coupon, layout = 'vertical' }: CouponCardProps) {
     return (
         <>
             <Modal />
-            <div className="glass hover:bg-secondary-800/60 border border-secondary-800 rounded-xl overflow-hidden hover:shadow-xl hover:border-primary-500/50 transition-all duration-300 group h-full flex flex-col relative">
+            <div className="glass-card flex flex-col h-full relative rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary-900/20 hover:border-primary-500/30 group">
                 <div className="p-5 flex-1">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 flex-shrink-0 bg-white rounded-lg flex items-center justify-center overflow-hidden border border-secondary-700 p-1">
@@ -250,7 +250,7 @@ export function CouponCard({ coupon, layout = 'vertical' }: CouponCardProps) {
                         </div>
                     </div>
 
-                    <h3 className="text-lg font-bold text-secondary-100 leading-tight mb-3 line-clamp-2 h-[3.25rem] group-hover:text-primary-400 transition-colors">{coupon.title}</h3>
+                    <h3 className="text-xl font-bold text-white leading-tight mb-3 line-clamp-2 h-[3.5rem] group-hover:text-primary-300 transition-colors">{coupon.title}</h3>
 
                     <div className="flex items-center gap-2 mb-4 flex-wrap">
                         {coupon.couponType === 'Code' ? (
@@ -265,25 +265,25 @@ export function CouponCard({ coupon, layout = 'vertical' }: CouponCardProps) {
                         )}
                     </div>
 
-                    <p className="text-sm text-secondary-400 line-clamp-2 mb-4">
+                    <p className="text-sm text-secondary-400 line-clamp-2 mb-4 h-[2.5rem]">
                         {coupon.description || 'Click to see details and redeem this offer.'}
                     </p>
                 </div>
 
-                <div className="p-4 bg-secondary-900/50 border-t border-secondary-800 mt-auto">
+                <div className="p-4 bg-secondary-950/30 border-t border-secondary-800/50 mt-auto backdrop-blur-sm">
                     {coupon.couponType === 'Code' ? (
                         <button
                             onClick={handleAction}
-                            className="w-full flex items-center justify-center gap-2 bg-transparent border-2 border-dashed border-primary-600 hover:border-primary-400 text-primary-500 hover:text-primary-400 font-mono font-bold py-2.5 rounded-lg transition-all hover:bg-primary-900/10"
+                            className="w-full flex items-center justify-center gap-2 bg-secondary-900/80 border border-primary-500/30 hover:border-primary-400 text-primary-300 hover:text-white font-mono font-bold py-3 rounded-xl transition-all hover:bg-primary-600/10 group/btn"
                         >
                             <span className="relative z-10 flex items-center gap-2">
-                                Show Code <span className="bg-secondary-800 text-secondary-400 text-[10px] px-1.5 py-0.5 rounded border border-secondary-700">{coupon.code?.slice(0, 4)}***</span>
+                                Show Code <span className="bg-secondary-950 text-secondary-400 text-[10px] px-2 py-0.5 rounded border border-secondary-800 group-hover/btn:border-primary-500/30 transition-colors">{coupon.code?.slice(0, 4)}***</span>
                             </span>
                         </button>
                     ) : (
                         <button
                             onClick={handleAction}
-                            className="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-3 rounded-lg transition-all shadow-md shadow-primary-900/20 active:scale-95"
+                            className="w-full bg-gradient-to-r from-primary-700 to-primary-600 hover:from-primary-600 hover:to-primary-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-primary-900/20 hover:shadow-primary-600/20 active:scale-95"
                         >
                             Get Deal
                         </button>

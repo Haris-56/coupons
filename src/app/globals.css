@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  /* Premium Vibrant Green Palette */
-  --color-primary-50: #f0fdf4;
-  --color-primary-100: #dcfce7;
-  --color-primary-200: #bbf7d0;
-  --color-primary-300: #86efac;
-  --color-primary-400: #4ade80;
-  --color-primary-500: #22c55e;
-  --color-primary-600: #16a34a;
-  --color-primary-700: #15803d;
-  --color-primary-800: #166534;
-  --color-primary-900: #14532d;
-  --color-primary-950: #052e16;
+  /* Premium Midnight Palette */
+  --color-primary-50: #f5f3ff;
+  --color-primary-100: #ede9fe;
+  --color-primary-200: #ddd6fe;
+  --color-primary-300: #c4b5fd;
+  --color-primary-400: #a78bfa;
+  --color-primary-500: #8b5cf6;
+  --color-primary-600: #7c3aed;
+  --color-primary-700: #6d28d9;
+  --color-primary-800: #5b21b6;
+  --color-primary-900: #4c1d95;
+  --color-primary-950: #2e1065;
 
-  /* Consistent Slate Neutral Palette for Dark Mode */
+  /* Deep Space Slate Palette */
   --color-secondary-50: #f8fafc;
   --color-secondary-100: #f1f5f9;
   --color-secondary-200: #e2e8f0;
@@ -33,7 +33,34 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply antialiased text-secondary-200 bg-secondary-950 selection:bg-primary-500/30 selection:text-primary-200;
+    @apply antialiased text-secondary-200 bg-secondary-950 min-h-screen relative overflow-x-hidden;
+    /* Grid Background */
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-attachment: fixed;
+  }
+
+  body::before {
+    content: "";
+    @apply fixed inset-0 z-[-1] pointer-events-none;
+    background: radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.15), transparent 70%),
+                radial-gradient(circle at 0% 100%, rgba(59, 130, 246, 0.08), transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.08), transparent 50%);
+  }
+
+  /* Star/Dot background effect */
+  body::after {
+    content: "";
+    @apply fixed inset-0 z-[-1] pointer-events-none opacity-30;
+    background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.15) 1px, transparent 0);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+  }
+  
+  ::selection {
+    @apply bg-primary-500/30 text-primary-200;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -43,36 +70,60 @@
 
 @layer utilities {
   .glass {
-    @apply bg-secondary-900/70 backdrop-blur-md border border-secondary-800;
+    @apply bg-secondary-900/60 backdrop-blur-xl border border-white/5;
   }
   
   .glass-card {
-    @apply bg-secondary-900 border border-secondary-800 shadow-xl;
+    @apply bg-secondary-900/40 backdrop-blur-md border border-white/10 shadow-2xl;
   }
   
+  .glass-header {
+    @apply bg-secondary-950/80 backdrop-blur-xl border-b border-white/5;
+  }
+
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-secondary-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-secondary-100 to-secondary-400;
   }
   
   .text-gradient-primary {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 to-primary-600;
   }
+  
+  .glow-primary {
+    box-shadow: 0 0 20px -5px var(--color-primary-500);
+  }
+  
+  .container-width {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .noise-overlay {
+    position: relative;
+  }
+  .noise-overlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 10;
+  }
 }
 
 @layer base {
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--color-secondary-950);
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
     background: var(--color-secondary-800);
-    border-radius: 4px;
-    border: 2px solid var(--color-secondary-950);
+    border-radius: 5px;
+    border: 3px solid var(--color-secondary-950);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-secondary-700);
+    @apply bg-primary-900;
   }
 }

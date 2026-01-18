@@ -18,10 +18,18 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="flex h-screen bg-secondary-50">
+        <div className="flex h-screen bg-secondary-950 overflow-hidden relative">
+            {/* Grid Background specifically for admin too */}
+            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none"
+                style={{
+                    backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)',
+                    backgroundSize: '40px 40px'
+                }}
+            />
+
             <Sidebar />
-            <main className="flex-1 overflow-y-auto p-8">
-                <div className="max-w-7xl mx-auto">
+            <main className="flex-1 overflow-y-auto p-4 md:p-8 relative z-10 custom-scrollbar">
+                <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
                     {children}
                 </div>
             </main>

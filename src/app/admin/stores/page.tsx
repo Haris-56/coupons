@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import { Plus, Search, ExternalLink, Store } from 'lucide-react';
+import { Plus, Search, ExternalLink, Store, Filter, ChevronLeft, ChevronRight, Globe, Network } from 'lucide-react';
 import { connectToDatabase } from '@/lib/db';
 import StoreModel from '@/models/Store';
 import { StoresClientConfig } from './client';
@@ -43,80 +43,88 @@ export default async function StoresPage(props: { searchParams: Promise<{ q?: st
     const { stores, total, totalPages } = await getStores(q, page, limit);
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-secondary-900">Store Management</h1>
+        <div className="space-y-12 pb-20">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="space-y-2">
+                    <h2 className="text-secondary-500 font-black text-xs uppercase tracking-[0.3em]">Retailer Registry</h2>
+                    <h1 className="text-4xl font-black text-white tracking-tighter uppercase">Brand <span className="text-primary-500">Directory</span></h1>
+                </div>
                 <StoresClientConfig />
-            </div>
+            </header>
 
-            <div className="bg-white border border-secondary-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="glass-card rounded-[2.5rem] overflow-hidden border-white/5 shadow-2xl shadow-black/50">
                 {/* Toolbar */}
-                <div className="p-4 border-b border-secondary-100 flex items-center gap-4 bg-secondary-50/50">
-                    <form className="relative flex-1 max-w-sm">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-400" size={18} />
+                <div className="p-8 border-b border-white/5 flex flex-col md:flex-row items-center gap-6 bg-white/[0.02]">
+                    <form className="relative flex-1 w-full max-w-xl group">
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-secondary-500 group-focus-within:text-primary-400 transition-colors" size={20} />
                         <input
                             name="q"
                             defaultValue={q}
-                            placeholder="Search stores..."
-                            className="w-full pl-10 pr-4 py-2 border border-secondary-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+                            placeholder="SEARCH BY BRAND NAME OR REGION..."
+                            className="w-full pl-16 pr-6 py-4 bg-secondary-900 border border-white/5 rounded-2xl text-sm font-bold text-white focus:outline-none focus:border-primary-500/50 transition-all placeholder:text-secondary-600 uppercase tracking-tight"
                         />
                     </form>
 
-                    <div className="text-sm text-secondary-500 ml-auto">
-                        Total: <span className="font-bold text-secondary-900">{total}</span>
+                    <div className="flex items-center gap-4 ml-auto">
+                        <div className="bg-primary-600/10 border border-primary-500/20 px-6 py-4 rounded-2xl flex items-center gap-3">
+                            <Store size={16} className="text-primary-500" />
+                            <span className="text-xs font-black text-white uppercase tracking-widest">{total} Total Merchants</span>
+                        </div>
                     </div>
                 </div>
 
                 {/* Table */}
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm text-secondary-600">
-                        <thead className="bg-secondary-50 text-secondary-700 font-semibold uppercase text-xs border-b border-secondary-200">
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left">
+                        <thead className="bg-white/20 text-secondary-500 text-[10px] uppercase font-black tracking-widest border-b border-white/5">
                             <tr>
-                                <th className="px-6 py-4 w-16 text-secondary-500">Id</th>
-                                <th className="px-6 py-4 w-20">Image</th>
-                                <th className="px-6 py-4">Title</th>
-                                <th className="px-6 py-4 text-center">Country</th>
-                                <th className="px-6 py-4 text-center">Network</th>
-                                <th className="px-6 py-4">Url/Link</th>
-                                <th className="px-6 py-4">Tracking Link</th>
-                                <th className="px-6 py-4 text-right">Actions</th>
+                                <th className="px-8 py-6 w-16 text-center">REF</th>
+                                <th className="px-8 py-6 w-20">Identity</th>
+                                <th className="px-8 py-6">Vndr Name</th>
+                                <th className="px-8 py-6 text-center">Geo Region</th>
+                                <th className="px-8 py-6 text-center">Aff Network</th>
+                                <th className="px-8 py-6">Domain Index</th>
+                                <th className="px-8 py-6">Tracking Pth</th>
+                                <th className="px-8 py-6 text-right">Terminal</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-secondary-100">
+                        <tbody className="divide-y divide-white/5">
                             {stores.map((store: any, index: number) => (
-                                <tr key={store._id} className="hover:bg-secondary-50/50 transition-colors group">
-                                    <td className="px-6 py-4 text-secondary-400 font-mono text-xs">
+                                <tr key={store._id} className="hover:bg-white/[0.03] transition-colors group">
+                                    <td className="px-8 py-7 font-black text-[10px] text-secondary-600 group-hover:text-secondary-400 transition-colors text-center tabular-nums">
                                         #{(page - 1) * limit + index + 1}
                                     </td>
-                                    <td className="px-6 py-4">
-                                        {store.logoUrl ? (
-                                            <img src={store.logoUrl} alt={store.name} className="w-10 h-10 object-contain rounded border border-secondary-100 bg-white p-1" />
-                                        ) : (
-                                            <div className="w-10 h-10 rounded bg-secondary-100 flex items-center justify-center text-[10px] font-bold text-secondary-400">
-                                                NO IMG
-                                            </div>
-                                        )}
+                                    <td className="px-8 py-7 text-center">
+                                        <div className="w-12 h-12 bg-white rounded-xl overflow-hidden border border-white/10 flex items-center justify-center p-2 group-hover:scale-110 transition-transform duration-500 mx-auto shadow-lg">
+                                            {store.logoUrl ? (
+                                                <img src={store.logoUrl} alt={store.name} className="w-full h-full object-contain" />
+                                            ) : (
+                                                <div className="w-full h-full bg-secondary-900 flex items-center justify-center text-[10px] font-black text-white uppercase">{store.name?.charAt(0)}</div>
+                                            )}
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4 font-medium text-secondary-900">
+                                    <td className="px-8 py-7 font-black text-white group-hover:text-primary-400 transition-colors uppercase tracking-tight">
                                         {store.name}
                                     </td>
-                                    <td className="px-6 py-4 text-center text-secondary-600">
-                                        {store.country || 'Global'}
-                                    </td>
-                                    <td className="px-6 py-4 text-center text-secondary-600">
-                                        {store.network || '-'}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="max-w-[200px] truncate text-secondary-500 hover:text-primary-600 transition-colors" title={store.url}>
-                                            {store.url || '-'}
+                                    <td className="px-8 py-7 text-center font-bold text-[10px] text-secondary-500 uppercase tracking-widest">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <Globe size={12} className="text-secondary-700" />
+                                            {store.country || 'GLOBAL'}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="max-w-[200px] truncate text-secondary-500 hover:text-primary-600 transition-colors" title={store.affiliateLink}>
-                                            {store.affiliateLink || '-'}
+                                    <td className="px-8 py-7 text-center font-bold text-[10px] text-secondary-500 uppercase tracking-widest">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <Network size={12} className="text-secondary-700" />
+                                            {store.network || '—'}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-8 py-7 font-bold text-xs text-secondary-500 truncate max-w-[150px] lowercase italic">
+                                        {store.url || 'N/A'}
+                                    </td>
+                                    <td className="px-8 py-7 font-bold text-xs text-secondary-500 truncate max-w-[150px] lowercase italic">
+                                        {store.affiliateLink || 'N/A'}
+                                    </td>
+                                    <td className="px-8 py-7 text-right">
                                         <AdminActionMenu
                                             editUrl={`/admin/stores/edit/${store._id}`}
                                             onDelete={async () => {
@@ -131,9 +139,9 @@ export default async function StoresPage(props: { searchParams: Promise<{ q?: st
 
                             {stores.length === 0 && (
                                 <tr>
-                                    <td colSpan={8} className="px-6 py-12 text-center text-secondary-400">
-                                        <Store className="mx-auto mb-2 opacity-50" />
-                                        No stores found.
+                                    <td colSpan={8} className="px-8 py-32 text-center text-secondary-600 font-black uppercase tracking-widest bg-white/[0.01]">
+                                        <Store className="mx-auto mb-6 opacity-10" size={48} />
+                                        No Branch Index Found
                                     </td>
                                 </tr>
                             )}
@@ -142,36 +150,42 @@ export default async function StoresPage(props: { searchParams: Promise<{ q?: st
                 </div>
 
                 {/* Pagination */}
-                <div className="p-4 border-t border-secondary-100 flex items-center justify-between text-sm text-secondary-500 bg-secondary-50/30">
-                    <span>Showing {(page - 1) * limit + 1} to {Math.min(page * limit, total)} of {total} entries</span>
-                    <div className="flex gap-1">
+                <div className="p-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 bg-white/[0.02]">
+                    <span className="text-xs font-black text-secondary-500 uppercase tracking-widest italic">
+                        Processing index <span className="text-white">{(page - 1) * limit + 1}</span> — <span className="text-white">{Math.min(page * limit, total)}</span> of <span className="text-white">{total}</span>
+                    </span>
+                    <div className="flex gap-2">
                         <Link
                             href={`/admin/stores?page=1&q=${q}`}
-                            className={`px-3 py-1 border border-secondary-200 rounded bg-white hover:bg-secondary-50 ${page === 1 ? 'pointer-events-none opacity-50' : ''}`}
+                            className={`w-12 h-12 flex items-center justify-center border border-white/5 rounded-2xl bg-white/5 text-secondary-500 hover:bg-white/10 hover:text-white transition-all ${page === 1 ? 'pointer-events-none opacity-30' : ''}`}
                         >
-                            First
+                            <ChevronLeft size={16} />
                         </Link>
-                        {[...Array(totalPages)].map((_, i) => {
-                            const p = i + 1;
-                            if (totalPages > 5 && Math.abs(p - page) > 1 && p !== 1 && p !== totalPages) {
-                                if (p === 2 || p === totalPages - 1) return <span key={p} className="px-2">...</span>;
-                                return null;
-                            }
-                            return (
-                                <Link
-                                    key={p}
-                                    href={`/admin/stores?page=${p}&q=${q}`}
-                                    className={`px-3 py-1 border border-secondary-200 rounded ${page === p ? 'bg-primary-600 text-white border-primary-600' : 'bg-white hover:bg-secondary-50'}`}
-                                >
-                                    {p}
-                                </Link>
-                            );
-                        })}
+
+                        <div className="flex gap-2 mx-2">
+                            {[...Array(totalPages)].map((_, i) => {
+                                const p = i + 1;
+                                if (totalPages > 5 && Math.abs(p - page) > 1 && p !== 1 && p !== totalPages) {
+                                    if (p === 2 || p === totalPages - 1) return <span key={p} className="flex items-center px-1 text-secondary-700 font-black">...</span>;
+                                    return null;
+                                }
+                                return (
+                                    <Link
+                                        key={p}
+                                        href={`/admin/stores?page=${p}&q=${q}`}
+                                        className={`w-12 h-12 flex items-center justify-center rounded-2xl font-black text-xs transition-all border ${page === p ? 'bg-primary-600 text-white border-primary-500 shadow-xl shadow-primary-600/20' : 'bg-white/5 text-secondary-500 border-white/5 hover:bg-white/10 hover:text-white'}`}
+                                    >
+                                        {p}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+
                         <Link
                             href={`/admin/stores?page=${Math.min(totalPages, page + 1)}&q=${q}`}
-                            className={`px-3 py-1 border border-secondary-200 rounded bg-white hover:bg-secondary-50 ${page === totalPages || totalPages === 0 ? 'pointer-events-none opacity-50' : ''}`}
+                            className={`w-12 h-12 flex items-center justify-center border border-white/5 rounded-2xl bg-white/5 text-secondary-500 hover:bg-white/10 hover:text-white transition-all ${page === totalPages || totalPages === 0 ? 'pointer-events-none opacity-30' : ''}`}
                         >
-                            Next
+                            <ChevronRight size={16} />
                         </Link>
                     </div>
                 </div>
